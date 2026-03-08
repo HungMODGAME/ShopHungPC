@@ -1,4 +1,4 @@
-// Dữ liệu mẫu ban đầu
+// Dữ liệu mẫu ban đầu (dùng khi chưa có dữ liệu trên Firebase)
 const defaultData = {
     mainCategories: [
         {
@@ -21,55 +21,13 @@ const defaultData = {
         }
     ],
     subCategories: [
-        {
-            id: 1,
-            name: "iPhone",
-            image: "https://via.placeholder.com/100x100/3498db/ffffff?text=iPhone",
-            mainCategoryId: 1,
-            products: [1, 2]
-        },
-        {
-            id: 2,
-            name: "Samsung",
-            image: "https://via.placeholder.com/100x100/3498db/ffffff?text=Samsung",
-            mainCategoryId: 1,
-            products: [3, 4]
-        },
-        {
-            id: 3,
-            name: "MacBook",
-            image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=MacBook",
-            mainCategoryId: 2,
-            products: [5]
-        },
-        {
-            id: 4,
-            name: "Dell",
-            image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=Dell",
-            mainCategoryId: 2,
-            products: [6]
-        },
-        {
-            id: 5,
-            name: "Tai nghe",
-            image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Headphones",
-            mainCategoryId: 3,
-            products: [7, 8]
-        },
-        {
-            id: 6,
-            name: "Sạc dự phòng",
-            image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Powerbank",
-            mainCategoryId: 3,
-            products: [9]
-        },
-        {
-            id: 7,
-            name: "Ốp lưng",
-            image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Case",
-            mainCategoryId: 3,
-            products: [10]
-        }
+        { id: 1, name: "iPhone", image: "https://via.placeholder.com/100x100/3498db/ffffff?text=iPhone", mainCategoryId: 1, products: [1, 2] },
+        { id: 2, name: "Samsung", image: "https://via.placeholder.com/100x100/3498db/ffffff?text=Samsung", mainCategoryId: 1, products: [3, 4] },
+        { id: 3, name: "MacBook", image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=MacBook", mainCategoryId: 2, products: [5] },
+        { id: 4, name: "Dell", image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=Dell", mainCategoryId: 2, products: [6] },
+        { id: 5, name: "Tai nghe", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Headphones", mainCategoryId: 3, products: [7, 8] },
+        { id: 6, name: "Sạc dự phòng", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Powerbank", mainCategoryId: 3, products: [9] },
+        { id: 7, name: "Ốp lưng", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Case", mainCategoryId: 3, products: [10] }
     ],
     products: [
         { 
@@ -77,11 +35,7 @@ const defaultData = {
             code: "IP14PM", 
             name: "iPhone 14 Pro Max", 
             price: 33990000, 
-            images: [
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+1",
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+2",
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+3"
-            ],
+            images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+2", "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+3"],
             status: "online", 
             description: "iPhone 14 Pro Max - Siêu phẩm mới nhất từ Apple với chip A16 Bionic, camera 48MP\n\n• Màn hình Super Retina XDR 6.7 inch\n• Chip A16 Bionic\n• Camera chính 48MP\n• Pin lên đến 29 giờ xem video", 
             subCategoryId: 1, 
@@ -93,10 +47,7 @@ const defaultData = {
             code: "IP14P", 
             name: "iPhone 14 Pro", 
             price: 29990000, 
-            images: [
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+1",
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+2"
-            ],
+            images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+2"],
             status: "online", 
             description: "iPhone 14 Pro - Màn hình Always-On, Dynamic Island đột phá\n\n• Màn hình 6.1 inch\n• Chip A16 Bionic\n• Dynamic Island tiện lợi\n• Camera 48MP", 
             subCategoryId: 1, 
@@ -108,12 +59,7 @@ const defaultData = {
             code: "SS23U", 
             name: "Samsung Galaxy S23 Ultra", 
             price: 28990000, 
-            images: [
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+1",
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+2",
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+3",
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+4"
-            ],
+            images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+2", "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+3", "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+4"],
             status: "maintenance", 
             description: "Galaxy S23 Ultra - Camera 200MP, bút S-Pen tích hợp\n\n• Camera 200MP chụp ảnh siêu nét\n• Bút S-Pen tiện lợi\n• Snapdragon 8 Gen 2\n• Pin 5000mAh", 
             subCategoryId: 2, 
@@ -125,10 +71,7 @@ const defaultData = {
             code: "SSZF5", 
             name: "Samsung Galaxy Z Fold5", 
             price: 41990000, 
-            images: [
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=Z+Fold5+1",
-                "https://via.placeholder.com/800x600/3498db/ffffff?text=Z+Fold5+2"
-            ],
+            images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=Z+Fold5+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=Z+Fold5+2"],
             status: "online", 
             description: "Galaxy Z Fold5 - Điện thoại màn hình gập thế hệ mới\n\n• Màn hình chính 7.6 inch\n• Màn hình phụ 6.2 inch\n• Bản lề mới mỏng hơn\n• Snapdragon 8 Gen 2", 
             subCategoryId: 2, 
@@ -140,11 +83,7 @@ const defaultData = {
             code: "MBP14", 
             name: "MacBook Pro 14 M3", 
             price: 54990000, 
-            images: [
-                "https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+1",
-                "https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+2",
-                "https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+3"
-            ],
+            images: ["https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+1", "https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+2", "https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+3"],
             status: "online", 
             description: "MacBook Pro với chip M3 Pro, màn hình Liquid Retina XDR\n\n• Chip M3 Pro 12-core CPU\n• RAM 18GB\n• SSD 512GB\n• Màn hình Liquid Retina XDR 14 inch", 
             subCategoryId: 3, 
@@ -156,10 +95,7 @@ const defaultData = {
             code: "DXPS15", 
             name: "Dell XPS 15", 
             price: 45990000, 
-            images: [
-                "https://via.placeholder.com/800x600/e74c3c/ffffff?text=Dell+XPS+1",
-                "https://via.placeholder.com/800x600/e74c3c/ffffff?text=Dell+XPS+2"
-            ],
+            images: ["https://via.placeholder.com/800x600/e74c3c/ffffff?text=Dell+XPS+1", "https://via.placeholder.com/800x600/e74c3c/ffffff?text=Dell+XPS+2"],
             status: "maintenance", 
             description: "Dell XPS 15 - Laptop cao cấp với màn hình OLED 4K\n\n• Intel Core i9-13900H\n• RAM 32GB\n• SSD 1TB\n• Màn hình OLED 4K 15.6 inch", 
             subCategoryId: 4, 
@@ -171,11 +107,7 @@ const defaultData = {
             code: "AP2", 
             name: "Tai nghe AirPods Pro 2", 
             price: 6790000, 
-            images: [
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+1",
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+2",
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+3"
-            ],
+            images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+2", "https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+3"],
             status: "online", 
             description: "AirPods Pro 2 - Chống ồn chủ động, chip H2\n\n• Chống ồn chủ động 2x tốt hơn\n• Chip H2 cho chất lượng âm thanh vượt trội\n• Thời gian pin lên đến 6 giờ\n• Sạc không dây MagSafe", 
             subCategoryId: 5, 
@@ -187,10 +119,7 @@ const defaultData = {
             code: "SONY5", 
             name: "Tai nghe Sony WH-1000XM5", 
             price: 8990000, 
-            images: [
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=Sony+WH-1000XM5+1",
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=Sony+WH-1000XM5+2"
-            ],
+            images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=Sony+WH-1000XM5+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=Sony+WH-1000XM5+2"],
             status: "online", 
             description: "Tai nghe chống ồn cao cấp từ Sony\n\n• Chống ồn hàng đầu thị trường\n• Công nghệ Ambient Sound\n• Thời gian pin 30 giờ\n• Sạc nhanh 3 phút nghe 3 giờ", 
             subCategoryId: 5, 
@@ -202,11 +131,7 @@ const defaultData = {
             code: "ANKER20", 
             name: "Sạc dự phòng Anker 20000mAh", 
             price: 1290000, 
-            images: [
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+1",
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+2",
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+3"
-            ],
+            images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+2", "https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+3"],
             status: "online", 
             description: "Sạc dự phòng dung lượng lớn, hỗ trợ sạc nhanh\n\n• Dung lượng 20000mAh\n• Công nghệ PowerIQ 3.0\n• Sạc nhanh 20W cho iPhone\n• 2 cổng USB-A và 1 cổng USB-C", 
             subCategoryId: 6, 
@@ -218,10 +143,7 @@ const defaultData = {
             code: "OP14", 
             name: "Ốp lưng MagSafe iPhone 14", 
             price: 890000, 
-            images: [
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+1",
-                "https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+2"
-            ],
+            images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+2"],
             status: "maintenance", 
             description: "Ốp lưng chính hãng Apple, hỗ trợ MagSafe\n\n• Chất liệu silicone cao cấp\n• Hỗ trợ MagSafe\n• Lớp lót mềm mại\n• Nhiều màu sắc lựa chọn", 
             subCategoryId: 7, 
@@ -231,25 +153,35 @@ const defaultData = {
     ]
 };
 
-// Khởi tạo dữ liệu
+// Tham chiếu Firebase (được khởi tạo từ HTML)
+const shopDataRef = database.ref('shopData');
+const settingsRef = database.ref('websiteSettings');
+
+// Dữ liệu toàn cục
 let data = {};
 let websiteSettings = {};
 
-// Kiểm tra và khởi tạo dữ liệu
-function initData() {
-    const savedData = localStorage.getItem('shopData');
-    if (savedData) {
-        data = JSON.parse(savedData);
+// Lắng nghe thay đổi dữ liệu sản phẩm
+shopDataRef.on('value', (snapshot) => {
+    const val = snapshot.val();
+    if (val) {
+        data = val;
     } else {
+        // Chưa có dữ liệu, tạo mới từ default
         data = JSON.parse(JSON.stringify(defaultData));
-        saveData();
+        shopDataRef.set(data);
     }
+    // Cập nhật giao diện
+    renderCategories();
+});
 
-    // Load cài đặt website
-    const savedSettings = localStorage.getItem('websiteSettings');
-    if (savedSettings) {
-        websiteSettings = JSON.parse(savedSettings);
+// Lắng nghe thay đổi cài đặt website
+settingsRef.on('value', (snapshot) => {
+    const val = snapshot.val();
+    if (val) {
+        websiteSettings = val;
     } else {
+        // Cài đặt mặc định
         websiteSettings = {
             logo: "https://via.placeholder.com/150x50/4CAF50/ffffff?text=LOGO+SHOP",
             aboutText: "ShopOnline - Địa chỉ mua sắm tin cậy của bạn với đa dạng sản phẩm công nghệ chính hãng, chất lượng cao.",
@@ -264,36 +196,21 @@ function initData() {
             zaloQR: "https://via.placeholder.com/100x100/3498db/ffffff?text=QR+Code",
             footerCopyright: "© 2024 ShopOnline. Tất cả quyền được bảo lưu."
         };
-        saveWebsiteSettings();
+        settingsRef.set(websiteSettings);
     }
-}
+    renderWebsiteSettings();
+});
 
-// Lưu vào localStorage
+// Hàm lưu dữ liệu (dùng trong admin, nhưng trang chủ không ghi)
 function saveData() {
-    localStorage.setItem('shopData', JSON.stringify(data));
+    shopDataRef.set(data);
 }
 
 function saveWebsiteSettings() {
-    localStorage.setItem('websiteSettings', JSON.stringify(websiteSettings));
+    settingsRef.set(websiteSettings);
 }
 
-// Đọc từ localStorage
-function loadData() {
-    initData();
-}
-
-// Reset dữ liệu về mặc định (cho admin)
-function resetToDefault() {
-    if (confirm('⚠️ Bạn có chắc muốn reset dữ liệu về mặc định? Toàn bộ dữ liệu hiện tại sẽ bị xóa.')) {
-        data = JSON.parse(JSON.stringify(defaultData));
-        saveData();
-        renderCategories();
-        renderProducts();
-        showNotification('Đã reset dữ liệu về mặc định!', 'success');
-    }
-}
-
-// Hiển thị thông báo
+// Hiển thị thông báo (giữ nguyên)
 function showNotification(message, type = 'success') {
     let notification = document.querySelector('.notification');
     if (!notification) {
@@ -301,15 +218,15 @@ function showNotification(message, type = 'success') {
         notification.className = 'notification';
         document.body.appendChild(notification);
     }
-    
     notification.textContent = message;
     notification.className = `notification ${type}`;
     notification.style.display = 'block';
-    
     setTimeout(() => {
         notification.style.display = 'none';
     }, 3000);
 }
+
+// ==================== CÁC HÀM RENDER ====================
 
 // Hiển thị danh mục (chỉ main categories)
 function renderCategories() {
@@ -359,7 +276,7 @@ function showMainCategory(mainCatId) {
     renderSubCategoriesList(subCategories, mainCat ? mainCat.name : 'Danh mục');
 }
 
-// Hiển thị danh sách danh mục phụ
+// Hiển thị danh sách danh mục phụ (dạng card)
 function renderSubCategoriesList(subCategories, title) {
     const productGrid = document.getElementById('productGrid');
     const categoryTitle = document.getElementById('categoryTitle');
@@ -426,7 +343,7 @@ function searchProducts() {
     }
 }
 
-// Hiển thị sản phẩm
+// Hiển thị sản phẩm (dạng card)
 function renderProducts(products, title) {
     const productGrid = document.getElementById('productGrid');
     const categoryTitle = document.getElementById('categoryTitle');
@@ -592,15 +509,12 @@ function closeModal() {
 
 // Cập nhật footer và logo từ settings
 function renderWebsiteSettings() {
-    // Logo
     const logoImg = document.querySelector('.logo img');
     if (logoImg) logoImg.src = websiteSettings.logo;
 
-    // Về chúng tôi
     const aboutText = document.getElementById('about-text');
     if (aboutText) aboutText.textContent = websiteSettings.aboutText;
 
-    // Liên hệ
     const addressEl = document.getElementById('contact-address');
     if (addressEl) addressEl.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${websiteSettings.address}`;
     const phoneEl = document.getElementById('contact-phone');
@@ -610,7 +524,6 @@ function renderWebsiteSettings() {
     const hoursEl = document.getElementById('contact-hours');
     if (hoursEl) hoursEl.innerHTML = `<i class="fas fa-clock"></i> ${websiteSettings.workingHours}`;
 
-    // Social links
     const fbLink = document.getElementById('social-fb');
     if (fbLink) fbLink.href = websiteSettings.facebook;
     const igLink = document.getElementById('social-ig');
@@ -620,43 +533,15 @@ function renderWebsiteSettings() {
     const ttLink = document.getElementById('social-tt');
     if (ttLink) ttLink.href = websiteSettings.tiktok;
 
-    // Zalo QR
     const zaloQR = document.getElementById('zalo-qr');
     if (zaloQR) zaloQR.src = websiteSettings.zaloQR;
 
-    // Copyright
     const copyright = document.getElementById('copyright');
     if (copyright) copyright.textContent = websiteSettings.footerCopyright;
 }
 
-// Làm mới dữ liệu
-function refreshData() {
-    loadData();
-    renderCategories();
-    renderWebsiteSettings();
-}
-
-// Lắng nghe sự kiện thay đổi localStorage
-window.addEventListener('storage', function(e) {
-    if (e.key === 'shopData') {
-        console.log('Dữ liệu sản phẩm thay đổi, cập nhật lại...');
-        refreshData();
-        showNotification('Dữ liệu sản phẩm đã được cập nhật!', 'info');
-    }
-    if (e.key === 'websiteSettings') {
-        console.log('Cài đặt website thay đổi, cập nhật lại...');
-        websiteSettings = JSON.parse(e.newValue);
-        renderWebsiteSettings();
-        showNotification('Cài đặt website đã được cập nhật!', 'info');
-    }
-});
-
-// Khởi tạo
+// Khởi tạo sự kiện
 document.addEventListener('DOMContentLoaded', function() {
-    loadData();
-    renderCategories();
-    renderWebsiteSettings();
-    
     // Xử lý tìm kiếm
     const searchButton = document.getElementById('searchButton');
     const searchInput = document.getElementById('searchInput');
@@ -690,6 +575,5 @@ document.addEventListener('DOMContentLoaded', function() {
     window.contactZalo = contactZalo;
     window.contactTelegram = contactTelegram;
     window.searchProducts = searchProducts;
-    window.refreshData = refreshData;
     window.changeMainImage = changeMainImage;
 });

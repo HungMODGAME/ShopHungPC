@@ -1,4 +1,8 @@
-// Khởi tạo dữ liệu
+// Tham chiếu Firebase (được khởi tạo từ HTML)
+const shopDataRef = database.ref('shopData');
+const settingsRef = database.ref('websiteSettings');
+
+// Dữ liệu toàn cục
 let data = {};
 let settings = JSON.parse(localStorage.getItem('adminSettings')) || {
     confirmDelete: true,
@@ -6,15 +10,15 @@ let settings = JSON.parse(localStorage.getItem('adminSettings')) || {
 };
 let websiteSettings = {};
 
-// Biến lưu trạng thái
+// Biến trạng thái
 let selectedMainCategoryId = null;
 let selectedSubCategoryId = null;
 
-// Load dữ liệu
-function loadData() {
-    const savedData = localStorage.getItem('shopData');
-    if (savedData) {
-        data = JSON.parse(savedData);
+// Lắng nghe dữ liệu sản phẩm
+shopDataRef.on('value', (snapshot) => {
+    const val = snapshot.val();
+    if (val) {
+        data = val;
     } else {
         // Dữ liệu mẫu
         data = {
@@ -48,13 +52,16 @@ function loadData() {
                 { id: 10, code: "OP14", name: "Ốp lưng MagSafe iPhone 14", price: 890000, images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+2"], status: "maintenance", description: "Ốp lưng chính hãng Apple", subCategoryId: 7, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" }
             ]
         };
-        saveData();
+        shopDataRef.set(data);
     }
+    renderAdminTables();
+});
 
-    // Load cài đặt website
-    const savedSettings = localStorage.getItem('websiteSettings');
-    if (savedSettings) {
-        websiteSettings = JSON.parse(savedSettings);
+// Lắng nghe cài đặt website
+settingsRef.on('value', (snapshot) => {
+    const val = snapshot.val();
+    if (val) {
+        websiteSettings = val;
     } else {
         websiteSettings = {
             logo: "https://via.placeholder.com/150x50/4CAF50/ffffff?text=LOGO+SHOP",
@@ -70,25 +77,18 @@ function loadData() {
             zaloQR: "https://via.placeholder.com/100x100/3498db/ffffff?text=QR+Code",
             footerCopyright: "© 2024 ShopOnline. Tất cả quyền được bảo lưu."
         };
-        saveWebsiteSettings();
+        settingsRef.set(websiteSettings);
     }
-}
+    renderSettingsForm();
+});
 
-// Lưu dữ liệu
+// Hàm lưu dữ liệu (gọi sau mỗi thao tác thay đổi)
 function saveData() {
-    localStorage.setItem('shopData', JSON.stringify(data));
-    window.dispatchEvent(new StorageEvent('storage', {
-        key: 'shopData',
-        newValue: JSON.stringify(data)
-    }));
+    shopDataRef.set(data);
 }
 
 function saveWebsiteSettings() {
-    localStorage.setItem('websiteSettings', JSON.stringify(websiteSettings));
-    window.dispatchEvent(new StorageEvent('storage', {
-        key: 'websiteSettings',
-        newValue: JSON.stringify(websiteSettings)
-    }));
+    settingsRef.set(websiteSettings);
 }
 
 // Format tiền
@@ -99,12 +99,10 @@ function formatPrice(price) {
 // Hiển thị thông báo
 function showNotification(message, type = 'success') {
     if (!settings.showNotifications) return;
-    
     const notification = document.getElementById('notification');
     notification.textContent = message;
     notification.className = `notification ${type}`;
     notification.style.display = 'block';
-    
     setTimeout(() => {
         notification.style.display = 'none';
     }, 3000);
@@ -534,17 +532,7 @@ function saveProduct(event) {
     }
     
     saveData();
-    
-    renderSubCategoryGrid();
-    renderMainCategoryGrid();
-    if (selectedSubCategoryId) {
-        renderProductsTable(selectedSubCategoryId);
-    }
-    if (selectedMainCategoryId) {
-        renderSubCategoriesTable(selectedMainCategoryId);
-    }
-    
-    updateDashboardStats();
+    // Không cần gọi render vì sự kiện on('value') sẽ tự cập nhật
     closeModal('productModal');
 }
 
@@ -564,17 +552,6 @@ function deleteProduct(id) {
     data.products = data.products.filter(p => p.id !== id);
     
     saveData();
-    
-    renderSubCategoryGrid();
-    renderMainCategoryGrid();
-    if (selectedSubCategoryId) {
-        renderProductsTable(selectedSubCategoryId);
-    }
-    if (selectedMainCategoryId) {
-        renderSubCategoriesTable(selectedMainCategoryId);
-    }
-    
-    updateDashboardStats();
     showNotification('Xóa sản phẩm thành công!');
 }
 
@@ -619,9 +596,6 @@ function saveMainCategory(event) {
     }
     
     saveData();
-    renderMainCategoriesTable();
-    renderMainCategoryGrid();
-    updateDashboardStats();
     closeModal('mainCategoryModal');
 }
 
@@ -644,11 +618,6 @@ function deleteMainCategory(id) {
     }
     
     saveData();
-    renderMainCategoriesTable();
-    renderMainCategoryGrid();
-    renderSubCategoryGrid();
-    renderProductsTable();
-    updateDashboardStats();
     showNotification('Xóa danh mục chính thành công!');
 }
 
@@ -728,15 +697,6 @@ function saveSubCategory(event) {
     }
     
     saveData();
-    
-    renderMainCategoriesTable();
-    renderMainCategoryGrid();
-    renderSubCategoryGrid();
-    if (selectedMainCategoryId === mainCatId) {
-        renderSubCategoriesTable(mainCatId);
-    }
-    
-    updateDashboardStats();
     closeModal('subCategoryModal');
 }
 
@@ -760,43 +720,14 @@ function deleteSubCategory(id) {
     data.subCategories = data.subCategories.filter(s => s.id !== id);
     
     saveData();
-    
-    renderMainCategoriesTable();
-    renderMainCategoryGrid();
-    renderSubCategoryGrid();
-    if (selectedMainCategoryId === mainCatId) {
-        renderSubCategoriesTable(mainCatId);
-    }
     if (selectedSubCategoryId === id) {
         hideProductDetail();
     }
-    
-    renderProductsTable();
-    updateDashboardStats();
     showNotification('Xóa danh mục phụ thành công!');
 }
 
-// Lắng nghe sự kiện thay đổi từ tab khác
-window.addEventListener('storage', function(e) {
-    if (e.key === 'shopData') {
-        console.log('Dữ liệu sản phẩm thay đổi, cập nhật lại...');
-        loadData();
-        renderAdminTables();
-        showNotification('Dữ liệu sản phẩm đã được cập nhật từ tab khác!', 'info');
-    }
-    if (e.key === 'websiteSettings') {
-        console.log('Cài đặt website thay đổi, cập nhật lại...');
-        websiteSettings = JSON.parse(e.newValue);
-        renderSettingsForm();
-        showNotification('Cài đặt đã được cập nhật từ tab khác!', 'info');
-    }
-});
-
 // Khởi tạo
 document.addEventListener('DOMContentLoaded', function() {
-    loadData();
-    renderAdminTables();
-    
     window.onclick = function(event) {
         if (event.target.classList.contains('admin-modal')) {
             event.target.style.display = 'none';

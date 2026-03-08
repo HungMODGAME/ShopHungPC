@@ -420,6 +420,24 @@
     <!-- Notification -->
     <div id="notification" class="notification"></div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script>
+      // Thay thế bằng thông tin Firebase của bạn
+      const firebaseConfig = {
+        apiKey: "AIzaSyASSeur5xyvQCVG22FcskyyOQ7YoxKCzLg",
+        authDomain: "shop-online-f1ba3.firebaseapp.com",
+        databaseURL: "https://shop-online-f1ba3-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "shop-online-f1ba3",
+        storageBucket: "shop-online-f1ba3.firebasestorage.app",
+        messagingSenderId: "693230373692",
+        appId: "1:693230373692:web:13f760983d5c959848ac39"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+    </script>
+    <!-- File JS của bạn -->
     <script src="admin.js"></script>
 </body>
 </html>
