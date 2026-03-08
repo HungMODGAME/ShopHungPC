@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Bán Hàng Chuyên Nghiệp</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header với Logo -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="https://via.placeholder.com/150x50/4CAF50/ffffff?text=LOGO+SHOP" alt="Logo Shop">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Trang chủ</a></li>
+                    <li><a href="#products">Sản phẩm</a></li>
+                    <li><a href="#about">Giới thiệu</a></li>
+                    <li><a href="#contact">Liên hệ</a></li>
+                </ul>
+            </nav>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Nhập mã sản phẩm...">
+                <button id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Sidebar danh mục -->
+            <aside class="sidebar">
+                <h2>DANH MỤC SẢN PHẨM</h2>
+                <ul class="categories" id="categoryList">
+                    <!-- Danh mục sẽ được load từ JS -->
+                </ul>
+            </aside>
+
+            <!-- Khu vực sản phẩm -->
+            <section class="products-section">
+                <h1 id="categoryTitle">Điện thoại</h1>
+                <div class="products-grid" id="productGrid">
+                    <!-- Sản phẩm sẽ được load từ JS -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal chi tiết sản phẩm -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalProductDetail"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section" id="footer-about">
+                    <h3>Về chúng tôi</h3>
+                    <p id="about-text">ShopOnline - Địa chỉ mua sắm tin cậy của bạn với đa dạng sản phẩm công nghệ chính hãng, chất lượng cao.</p>
+                    <div class="social-links">
+                        <a href="#" id="social-fb"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" id="social-ig"><i class="fab fa-instagram"></i></a>
+                        <a href="#" id="social-yt"><i class="fab fa-youtube"></i></a>
+                        <a href="#" id="social-tt"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section" id="footer-contact">
+                    <h3>Liên hệ</h3>
+                    <ul>
+                        <li id="contact-address"><i class="fas fa-map-marker-alt"></i> 123 Đường ABC, Quận XYZ, TP.HCM</li>
+                        <li id="contact-phone"><i class="fas fa-phone"></i> 0123 456 789</li>
+                        <li id="contact-email"><i class="fas fa-envelope"></i> info@shoponline.com</li>
+                        <li id="contact-hours"><i class="fas fa-clock"></i> Thứ 2 - Chủ nhật: 8:00 - 22:00</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section" id="footer-policy">
+                    <h3>Chính sách</h3>
+                    <ul>
+                        <li><a href="#">Chính sách bảo hành</a></li>
+                        <li><a href="#">Chính sách đổi trả</a></li>
+                        <li><a href="#">Chính sách vận chuyển</a></li>
+                        <li><a href="#">Phương thức thanh toán</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section" id="footer-zalo">
+                    <h3>Kết nối Zalo</h3>
+                    <p>Quét mã QR để kết nối Zalo với chúng tôi</p>
+                    <div style="background: white; padding: 10px; border-radius: 8px; width: 120px;">
+                        <img src="https://via.placeholder.com/100x100/3498db/ffffff?text=QR+Code" alt="QR Code" id="zalo-qr" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p id="copyright">© 2024 ShopOnline. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

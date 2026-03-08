@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quản lý cửa hàng</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li data-tab="products">
+                    <i class="fas fa-box"></i>
+                    <span>Quản lý sản phẩm</span>
+                </li>
+                <li data-tab="categories">
+                    <i class="fas fa-tags"></i>
+                    <span>Quản lý danh mục</span>
+                </li>
+                <li data-tab="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Cài đặt</span>
+                </li>
+                <li class="view-shop" onclick="window.open('index.html', '_blank')">
+                    <i class="fas fa-store"></i>
+                    <span>Xem Shop</span>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Header -->
+            <header class="admin-header">
+                <h1 id="pageTitle">Dashboard</h1>
+            </header>
+
+            <!-- Content Area -->
+            <div class="admin-content">
+                <!-- Dashboard Tab -->
+                <div class="tab-content active" id="dashboard-tab">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Tổng sản phẩm</h3>
+                                <p id="totalProducts">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Danh mục chính</h3>
+                                <p id="totalMainCategories">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-list"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Danh mục phụ</h3>
+                                <p id="totalSubCategories">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Đang online</h3>
+                                <p id="totalOnline">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recent-section">
+                        <h2>Sản phẩm mới nhất</h2>
+                        <div class="table-responsive">
+                            <table class="data-table" id="recentProducts">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Mã SP</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Giá</th>
+                                        <th>Trạng thái</th>
+                                        <th>Danh mục</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Tab -->
+                <div class="tab-content" id="products-tab">
+                    <div class="content-header">
+                        <h2>Quản lý sản phẩm</h2>
+                        <button class="btn-add" onclick="showAddProductModal()">
+                            <i class="fas fa-plus"></i> Thêm sản phẩm
+                        </button>
+                    </div>
+                    
+                    <h3 style="margin: 20px 0 10px; color: #333;">Danh mục sản phẩm</h3>
+                    <div class="subcategory-grid" id="subCategoryGrid">
+                        <!-- Các card danh mục phụ sẽ được load từ JS -->
+                    </div>
+                    
+                    <div id="productDetailArea" style="display: none; margin-top: 30px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 id="selectedSubCategoryTitle" style="color: #3498db;"></h4>
+                            <button class="btn-back" onclick="hideProductDetail()">
+                                <i class="fas fa-arrow-left"></i> Quay lại
+                            </button>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="data-table" id="productsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ảnh</th>
+                                        <th>Mã SP</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Giá</th>
+                                        <th>Trạng thái</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Tab -->
+                <div class="tab-content" id="categories-tab">
+                    <div class="content-header">
+                        <h2>Quản lý danh mục</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-add" onclick="showAddMainCategoryModal()">
+                                <i class="fas fa-plus"></i> Thêm danh mục chính
+                            </button>
+                            <button class="btn-add" onclick="showAddSubCategoryModal()">
+                                <i class="fas fa-plus"></i> Thêm danh mục phụ
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin: 20px 0 10px; color: #333;">Danh mục chính</h3>
+                    <div class="table-responsive" style="margin-bottom: 30px;">
+                        <table class="data-table" id="mainCategoriesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Ảnh</th>
+                                    <th>Tên danh mục chính</th>
+                                    <th>Số danh mục phụ</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 10px; color: #333;">Danh mục phụ</h3>
+                    
+                    <div class="main-category-grid" id="mainCategoryGrid">
+                        <!-- Các card danh mục chính sẽ được load từ JS -->
+                    </div>
+                    
+                    <div id="subCategoryDetailArea" style="display: none; margin-top: 30px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 id="selectedMainCategoryTitle" style="color: #3498db;"></h4>
+                            <button class="btn-back" onclick="hideSubCategoryDetail()">
+                                <i class="fas fa-arrow-left"></i> Quay lại
+                            </button>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="data-table" id="subCategoriesTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ảnh</th>
+                                        <th>Tên danh mục phụ</th>
+                                        <th>Số sản phẩm</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="tab-content" id="settings-tab">
+                    <div class="content-header">
+                        <h2>Cài đặt trang web</h2>
+                        <button class="btn-save" onclick="saveSettings()">
+                            <i class="fas fa-save"></i> Lưu thay đổi
+                        </button>
+                    </div>
+                    <form id="settingsForm" onsubmit="event.preventDefault(); saveSettings();">
+                        <!-- Thông tin chung -->
+                        <h3 style="margin: 20px 0 10px; color:#333;">Thông tin chung</h3>
+                        <div class="form-group">
+                            <label>Logo (URL ảnh)</label>
+                            <input type="url" id="settingLogo" placeholder="https://example.com/logo.png">
+                        </div>
+                        <div class="form-group">
+                            <label>Đoạn giới thiệu (footer)</label>
+                            <textarea id="settingAboutText" rows="3" placeholder="Giới thiệu về shop..."></textarea>
+                        </div>
+
+                        <!-- Liên hệ -->
+                        <h3 style="margin: 20px 0 10px; color:#333;">Liên hệ</h3>
+                        <div class="form-group">
+                            <label>Số điện thoại</label>
+                            <input type="text" id="settingPhone">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="settingEmail">
+                        </div>
+                        <div class="form-group">
+                            <label>Địa chỉ</label>
+                            <input type="text" id="settingAddress">
+                        </div>
+                        <div class="form-group">
+                            <label>Giờ làm việc</label>
+                            <input type="text" id="settingWorkingHours">
+                        </div>
+
+                        <!-- Mạng xã hội -->
+                        <h3 style="margin: 20px 0 10px; color:#333;">Mạng xã hội</h3>
+                        <div class="form-group">
+                            <label>Facebook (URL)</label>
+                            <input type="url" id="settingFacebook">
+                        </div>
+                        <div class="form-group">
+                            <label>Instagram (URL)</label>
+                            <input type="url" id="settingInstagram">
+                        </div>
+                        <div class="form-group">
+                            <label>YouTube (URL)</label>
+                            <input type="url" id="settingYoutube">
+                        </div>
+                        <div class="form-group">
+                            <label>TikTok (URL)</label>
+                            <input type="url" id="settingTiktok">
+                        </div>
+
+                        <!-- Kết nối Zalo -->
+                        <h3 style="margin: 20px 0 10px; color:#333;">Kết nối Zalo</h3>
+                        <div class="form-group">
+                            <label>Mã QR Zalo (URL ảnh)</label>
+                            <input type="url" id="settingZaloQR">
+                        </div>
+
+                        <!-- Footer -->
+                        <h3 style="margin: 20px 0 10px; color:#333;">Footer</h3>
+                        <div class="form-group">
+                            <label>Dòng bản quyền</label>
+                            <input type="text" id="settingCopyright">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Product Modal -->
+    <div id="productModal" class="admin-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('productModal')">&times;</span>
+            <h2 id="productModalTitle">Thêm sản phẩm</h2>
+            <form id="productForm" onsubmit="saveProduct(event)">
+                <input type="hidden" id="productId" value="">
+                
+                <div class="form-group">
+                    <label>Mã sản phẩm *</label>
+                    <input type="text" id="productCode" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tên sản phẩm *</label>
+                    <input type="text" id="productName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Giá (VND) *</label>
+                    <input type="number" id="productPrice" required min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label>Danh mục phụ *</label>
+                    <select id="productSubCategory" required></select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select id="productStatus">
+                        <option value="online">Online</option>
+                        <option value="maintenance">Bảo trì</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Hình ảnh sản phẩm *</label>
+                    <div id="productImagesContainer">
+                        <div class="image-input-group">
+                            <input type="url" class="product-image-input" placeholder="URL ảnh 1" required>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-add-image" onclick="addImageInput()">
+                        <i class="fas fa-plus"></i> Thêm ảnh
+                    </button>
+                    <small>Ảnh đầu tiên sẽ là ảnh đại diện</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea id="productDescription" rows="4"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Link Zalo</label>
+                    <input type="url" id="productZalo" placeholder="https://zalo.me/...">
+                </div>
+                
+                <div class="form-group">
+                    <label>Link Telegram</label>
+                    <input type="url" id="productTelegram" placeholder="https://t.me/...">
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('productModal')">Hủy</button>
+                    <button type="submit" class="btn-save">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Category Modal -->
+    <div id="mainCategoryModal" class="admin-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('mainCategoryModal')">&times;</span>
+            <h2 id="mainCategoryModalTitle">Thêm danh mục chính</h2>
+            <form id="mainCategoryForm" onsubmit="saveMainCategory(event)">
+                <input type="hidden" id="mainCategoryId" value="">
+                
+                <div class="form-group">
+                    <label>Tên danh mục chính *</label>
+                    <input type="text" id="mainCategoryName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>URL Ảnh *</label>
+                    <input type="url" id="mainCategoryImage" required>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('mainCategoryModal')">Hủy</button>
+                    <button type="submit" class="btn-save">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SubCategory Modal -->
+    <div id="subCategoryModal" class="admin-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('subCategoryModal')">&times;</span>
+            <h2 id="subCategoryModalTitle">Thêm danh mục phụ</h2>
+            <form id="subCategoryForm" onsubmit="saveSubCategory(event)">
+                <input type="hidden" id="subCategoryId" value="">
+                
+                <div class="form-group">
+                    <label>Tên danh mục phụ *</label>
+                    <input type="text" id="subCategoryName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>URL Ảnh *</label>
+                    <input type="url" id="subCategoryImage" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Danh mục chính *</label>
+                    <select id="subCategoryMain" required></select>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal('subCategoryModal')">Hủy</button>
+                    <button type="submit" class="btn-save">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
