@@ -11,17 +11,11 @@
     <!-- Header với Logo -->
     <header>
         <div class="container">
-            <div class="logo">
-                <img src="https://via.placeholder.com/150x50/4CAF50/ffffff?text=LOGO+SHOP" alt="Logo Shop">
+            <div class="logo" style="display: flex; align-items: center;">
+                <img src="https://via.placeholder.com/150x50/4CAF50/ffffff?text=LOGO+SHOP" alt="Logo Shop" id="logoImg">
+                <span id="shopNameDisplay" style="color: white; margin-left: 10px; font-size: 1.2rem; font-weight: bold;"></span>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="#home">Trang chủ</a></li>
-                    <li><a href="#products">Sản phẩm</a></li>
-                    <li><a href="#about">Giới thiệu</a></li>
-                    <li><a href="#contact">Liên hệ</a></li>
-                </ul>
-            </nav>
+            
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Nhập mã sản phẩm...">
                 <button id="searchButton"><i class="fas fa-search"></i></button>
@@ -64,11 +58,10 @@
             <div class="footer-content">
                 <div class="footer-section" id="footer-about">
                     <h3>Về chúng tôi</h3>
-                    <p id="about-text">ShopOnline - Địa chỉ mua sắm tin cậy của bạn với đa dạng sản phẩm công nghệ chính hãng, chất lượng cao.</p>
+                   
                     <div class="social-links">
-                        <a href="#" id="social-fb"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" id="social-ig"><i class="fab fa-instagram"></i></a>
-                        <a href="#" id="social-yt"><i class="fab fa-youtube"></i></a>
+                        
+                        <a href="#" id="social-yt"><i class="fa-solid fa-phone"></i></a>
                         <a href="#" id="social-tt"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
@@ -84,22 +77,15 @@
                 </div>
                 
                 <div class="footer-section" id="footer-policy">
-                    <h3>Chính sách</h3>
+                    <h3>ĐIỀU KHOẢN SỬ DỤNG</h3>
                     <ul>
-                        <li><a href="#">Chính sách bảo hành</a></li>
-                        <li><a href="#">Chính sách đổi trả</a></li>
-                        <li><a href="#">Chính sách vận chuyển</a></li>
-                        <li><a href="#">Phương thức thanh toán</a></li>
+                        <li><a href="#">Key KHÔNG hoàn trả nếu như đã sử dụng.</a></li>
+                        <li><a href="#">Với mỗi bản Hack hãy nhờ admin tư vấn trước khi sử dụng.</a></li>
+                        <li><a href="#">Khi Mua Admin sẽ hướng dẫn cách cài đặt và sử dụng.</a></li>
                     </ul>
                 </div>
-                
-                <div class="footer-section" id="footer-zalo">
-                    <h3>Kết nối Zalo</h3>
-                    <p>Quét mã QR để kết nối Zalo với chúng tôi</p>
-                    <div style="background: white; padding: 10px; border-radius: 8px; width: 120px;">
-                        <img src="https://via.placeholder.com/100x100/3498db/ffffff?text=QR+Code" alt="QR Code" id="zalo-qr" style="width: 100%;">
-                    </div>
-                </div>
+
+              
             </div>
             
             <div class="footer-bottom">
@@ -112,16 +98,16 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <script>
-      // Thay thế bằng thông tin Firebase của bạn
+      // THAY THẾ BẰNG THÔNG TIN FIREBASE CỦA BẠN
       const firebaseConfig = {
-        apiKey: "AIzaSyASSeur5xyvQCVG22FcskyyOQ7YoxKCzLg",
-        authDomain: "shop-online-f1ba3.firebaseapp.com",
-        databaseURL: "https://shop-online-f1ba3-default-rtdb.asia-southeast1.firebasedatabase.app/",
-        projectId: "shop-online-f1ba3",
-        storageBucket: "shop-online-f1ba3.firebasestorage.app",
-        messagingSenderId: "693230373692",
-        appId: "1:693230373692:web:13f760983d5c959848ac39"
-      };
+  apiKey: "AIzaSyASSeur5xyvQCVG22FcskyyOQ7YoxKCzLg",
+  authDomain: "shop-online-f1ba3.firebaseapp.com",
+  databaseURL: "https://shop-online-f1ba3-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "shop-online-f1ba3",
+  storageBucket: "shop-online-f1ba3.firebasestorage.app",
+  messagingSenderId: "693230373692",
+  appId: "1:693230373692:web:13f760983d5c959848ac39"
+};
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
     </script>

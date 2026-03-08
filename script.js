@@ -1,159 +1,4 @@
-// Dữ liệu mẫu ban đầu (dùng khi chưa có dữ liệu trên Firebase)
-const defaultData = {
-    mainCategories: [
-        {
-            id: 1,
-            name: "Điện thoại",
-            image: "https://via.placeholder.com/100x100/3498db/ffffff?text=Phone",
-            subCategories: [1, 2]
-        },
-        {
-            id: 2,
-            name: "Laptop",
-            image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=Laptop",
-            subCategories: [3, 4]
-        },
-        {
-            id: 3,
-            name: "Phụ kiện",
-            image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Accessories",
-            subCategories: [5, 6, 7]
-        }
-    ],
-    subCategories: [
-        { id: 1, name: "iPhone", image: "https://via.placeholder.com/100x100/3498db/ffffff?text=iPhone", mainCategoryId: 1, products: [1, 2] },
-        { id: 2, name: "Samsung", image: "https://via.placeholder.com/100x100/3498db/ffffff?text=Samsung", mainCategoryId: 1, products: [3, 4] },
-        { id: 3, name: "MacBook", image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=MacBook", mainCategoryId: 2, products: [5] },
-        { id: 4, name: "Dell", image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=Dell", mainCategoryId: 2, products: [6] },
-        { id: 5, name: "Tai nghe", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Headphones", mainCategoryId: 3, products: [7, 8] },
-        { id: 6, name: "Sạc dự phòng", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Powerbank", mainCategoryId: 3, products: [9] },
-        { id: 7, name: "Ốp lưng", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Case", mainCategoryId: 3, products: [10] }
-    ],
-    products: [
-        { 
-            id: 1, 
-            code: "IP14PM", 
-            name: "iPhone 14 Pro Max", 
-            price: 33990000, 
-            images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+2", "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+3"],
-            status: "online", 
-            description: "iPhone 14 Pro Max - Siêu phẩm mới nhất từ Apple với chip A16 Bionic, camera 48MP\n\n• Màn hình Super Retina XDR 6.7 inch\n• Chip A16 Bionic\n• Camera chính 48MP\n• Pin lên đến 29 giờ xem video", 
-            subCategoryId: 1, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        },
-        { 
-            id: 2, 
-            code: "IP14P", 
-            name: "iPhone 14 Pro", 
-            price: 29990000, 
-            images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+2"],
-            status: "online", 
-            description: "iPhone 14 Pro - Màn hình Always-On, Dynamic Island đột phá\n\n• Màn hình 6.1 inch\n• Chip A16 Bionic\n• Dynamic Island tiện lợi\n• Camera 48MP", 
-            subCategoryId: 1, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        },
-        { 
-            id: 3, 
-            code: "SS23U", 
-            name: "Samsung Galaxy S23 Ultra", 
-            price: 28990000, 
-            images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+2", "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+3", "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+4"],
-            status: "maintenance", 
-            description: "Galaxy S23 Ultra - Camera 200MP, bút S-Pen tích hợp\n\n• Camera 200MP chụp ảnh siêu nét\n• Bút S-Pen tiện lợi\n• Snapdragon 8 Gen 2\n• Pin 5000mAh", 
-            subCategoryId: 2, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        },
-        { 
-            id: 4, 
-            code: "SSZF5", 
-            name: "Samsung Galaxy Z Fold5", 
-            price: 41990000, 
-            images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=Z+Fold5+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=Z+Fold5+2"],
-            status: "online", 
-            description: "Galaxy Z Fold5 - Điện thoại màn hình gập thế hệ mới\n\n• Màn hình chính 7.6 inch\n• Màn hình phụ 6.2 inch\n• Bản lề mới mỏng hơn\n• Snapdragon 8 Gen 2", 
-            subCategoryId: 2, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        },
-        { 
-            id: 5, 
-            code: "MBP14", 
-            name: "MacBook Pro 14 M3", 
-            price: 54990000, 
-            images: ["https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+1", "https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+2", "https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+3"],
-            status: "online", 
-            description: "MacBook Pro với chip M3 Pro, màn hình Liquid Retina XDR\n\n• Chip M3 Pro 12-core CPU\n• RAM 18GB\n• SSD 512GB\n• Màn hình Liquid Retina XDR 14 inch", 
-            subCategoryId: 3, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        },
-        { 
-            id: 6, 
-            code: "DXPS15", 
-            name: "Dell XPS 15", 
-            price: 45990000, 
-            images: ["https://via.placeholder.com/800x600/e74c3c/ffffff?text=Dell+XPS+1", "https://via.placeholder.com/800x600/e74c3c/ffffff?text=Dell+XPS+2"],
-            status: "maintenance", 
-            description: "Dell XPS 15 - Laptop cao cấp với màn hình OLED 4K\n\n• Intel Core i9-13900H\n• RAM 32GB\n• SSD 1TB\n• Màn hình OLED 4K 15.6 inch", 
-            subCategoryId: 4, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        },
-        { 
-            id: 7, 
-            code: "AP2", 
-            name: "Tai nghe AirPods Pro 2", 
-            price: 6790000, 
-            images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+2", "https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+3"],
-            status: "online", 
-            description: "AirPods Pro 2 - Chống ồn chủ động, chip H2\n\n• Chống ồn chủ động 2x tốt hơn\n• Chip H2 cho chất lượng âm thanh vượt trội\n• Thời gian pin lên đến 6 giờ\n• Sạc không dây MagSafe", 
-            subCategoryId: 5, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        },
-        { 
-            id: 8, 
-            code: "SONY5", 
-            name: "Tai nghe Sony WH-1000XM5", 
-            price: 8990000, 
-            images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=Sony+WH-1000XM5+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=Sony+WH-1000XM5+2"],
-            status: "online", 
-            description: "Tai nghe chống ồn cao cấp từ Sony\n\n• Chống ồn hàng đầu thị trường\n• Công nghệ Ambient Sound\n• Thời gian pin 30 giờ\n• Sạc nhanh 3 phút nghe 3 giờ", 
-            subCategoryId: 5, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        },
-        { 
-            id: 9, 
-            code: "ANKER20", 
-            name: "Sạc dự phòng Anker 20000mAh", 
-            price: 1290000, 
-            images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+2", "https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+3"],
-            status: "online", 
-            description: "Sạc dự phòng dung lượng lớn, hỗ trợ sạc nhanh\n\n• Dung lượng 20000mAh\n• Công nghệ PowerIQ 3.0\n• Sạc nhanh 20W cho iPhone\n• 2 cổng USB-A và 1 cổng USB-C", 
-            subCategoryId: 6, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        },
-        { 
-            id: 10, 
-            code: "OP14", 
-            name: "Ốp lưng MagSafe iPhone 14", 
-            price: 890000, 
-            images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+2"],
-            status: "maintenance", 
-            description: "Ốp lưng chính hãng Apple, hỗ trợ MagSafe\n\n• Chất liệu silicone cao cấp\n• Hỗ trợ MagSafe\n• Lớp lót mềm mại\n• Nhiều màu sắc lựa chọn", 
-            subCategoryId: 7, 
-            zalo: "https://zalo.me/0123456789", 
-            telegram: "https://t.me/shoponline" 
-        }
-    ]
-};
-
-// Tham chiếu Firebase (được khởi tạo từ HTML)
+// Tham chiếu Firebase
 const shopDataRef = database.ref('shopData');
 const settingsRef = database.ref('websiteSettings');
 
@@ -167,11 +12,15 @@ shopDataRef.on('value', (snapshot) => {
     if (val) {
         data = val;
     } else {
-        // Chưa có dữ liệu, tạo mới từ default
-        data = JSON.parse(JSON.stringify(defaultData));
+        // Khởi tạo cấu trúc dữ liệu rỗng
+        data = {
+            mainCategories: [],
+            subCategories: [],
+            products: []
+        };
+        // Ghi lên database để đồng bộ (không bắt buộc, nhưng nên có)
         shopDataRef.set(data);
     }
-    // Cập nhật giao diện
     renderCategories();
 });
 
@@ -181,8 +30,8 @@ settingsRef.on('value', (snapshot) => {
     if (val) {
         websiteSettings = val;
     } else {
-        // Cài đặt mặc định
         websiteSettings = {
+            shopName: "Tên cửa hàng",
             logo: "https://via.placeholder.com/150x50/4CAF50/ffffff?text=LOGO+SHOP",
             aboutText: "ShopOnline - Địa chỉ mua sắm tin cậy của bạn với đa dạng sản phẩm công nghệ chính hãng, chất lượng cao.",
             phone: "0123 456 789",
@@ -194,7 +43,20 @@ settingsRef.on('value', (snapshot) => {
             youtube: "#",
             tiktok: "#",
             zaloQR: "https://via.placeholder.com/100x100/3498db/ffffff?text=QR+Code",
-            footerCopyright: "© 2024 ShopOnline. Tất cả quyền được bảo lưu."
+            footerCopyright: "© 2024 ShopOnline. Tất cả quyền được bảo lưu.",
+            showShopName: true,
+            showLogo: true,
+            showAboutText: true,
+            showPhone: true,
+            showEmail: true,
+            showAddress: true,
+            showWorkingHours: true,
+            showFacebook: true,
+            showInstagram: true,
+            showYoutube: true,
+            showTiktok: true,
+            showZaloQR: true,
+            showCopyright: true
         };
         settingsRef.set(websiteSettings);
     }
@@ -509,35 +371,141 @@ function closeModal() {
 
 // Cập nhật footer và logo từ settings
 function renderWebsiteSettings() {
-    const logoImg = document.querySelector('.logo img');
-    if (logoImg) logoImg.src = websiteSettings.logo;
+    // Logo
+    const logoImg = document.getElementById('logoImg') || document.querySelector('.logo img');
+    if (logoImg) {
+        if (websiteSettings.showLogo) {
+            logoImg.src = websiteSettings.logo;
+            logoImg.style.display = 'inline';
+        } else {
+            logoImg.style.display = 'none';
+        }
+    }
 
-    const aboutText = document.getElementById('about-text');
-    if (aboutText) aboutText.textContent = websiteSettings.aboutText;
+    // Tên shop
+    const shopNameSpan = document.getElementById('shopNameDisplay');
+    if (shopNameSpan) {
+        if (websiteSettings.showShopName) {
+            shopNameSpan.textContent = websiteSettings.shopName || '';
+            shopNameSpan.style.display = 'inline';
+        } else {
+            shopNameSpan.style.display = 'none';
+        }
+    }
 
+    // Đoạn giới thiệu - ẩn cả section nếu không hiển thị
+    const aboutSection = document.getElementById('footer-about');
+    if (aboutSection) {
+        if (websiteSettings.showAboutText) {
+            aboutSection.style.display = 'block';
+            const aboutText = document.getElementById('about-text');
+            if (aboutText) aboutText.textContent = websiteSettings.aboutText;
+        } else {
+            aboutSection.style.display = 'none';
+        }
+    }
+
+    // Liên hệ - từng dòng
     const addressEl = document.getElementById('contact-address');
-    if (addressEl) addressEl.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${websiteSettings.address}`;
+    if (addressEl) {
+        if (websiteSettings.showAddress) {
+            addressEl.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${websiteSettings.address}`;
+            addressEl.style.display = 'flex';
+        } else {
+            addressEl.style.display = 'none';
+        }
+    }
+
     const phoneEl = document.getElementById('contact-phone');
-    if (phoneEl) phoneEl.innerHTML = `<i class="fas fa-phone"></i> ${websiteSettings.phone}`;
+    if (phoneEl) {
+        if (websiteSettings.showPhone) {
+            phoneEl.innerHTML = `<i class="fas fa-phone"></i> ${websiteSettings.phone}`;
+            phoneEl.style.display = 'flex';
+        } else {
+            phoneEl.style.display = 'none';
+        }
+    }
+
     const emailEl = document.getElementById('contact-email');
-    if (emailEl) emailEl.innerHTML = `<i class="fas fa-envelope"></i> ${websiteSettings.email}`;
+    if (emailEl) {
+        if (websiteSettings.showEmail) {
+            emailEl.innerHTML = `<i class="fas fa-envelope"></i> ${websiteSettings.email}`;
+            emailEl.style.display = 'flex';
+        } else {
+            emailEl.style.display = 'none';
+        }
+    }
+
     const hoursEl = document.getElementById('contact-hours');
-    if (hoursEl) hoursEl.innerHTML = `<i class="fas fa-clock"></i> ${websiteSettings.workingHours}`;
+    if (hoursEl) {
+        if (websiteSettings.showWorkingHours) {
+            hoursEl.innerHTML = `<i class="fas fa-clock"></i> ${websiteSettings.workingHours}`;
+            hoursEl.style.display = 'flex';
+        } else {
+            hoursEl.style.display = 'none';
+        }
+    }
 
+    // Mạng xã hội
     const fbLink = document.getElementById('social-fb');
-    if (fbLink) fbLink.href = websiteSettings.facebook;
+    if (fbLink) {
+        if (websiteSettings.showFacebook) {
+            fbLink.href = websiteSettings.facebook;
+            fbLink.style.display = 'flex';
+        } else {
+            fbLink.style.display = 'none';
+        }
+    }
     const igLink = document.getElementById('social-ig');
-    if (igLink) igLink.href = websiteSettings.instagram;
+    if (igLink) {
+        if (websiteSettings.showInstagram) {
+            igLink.href = websiteSettings.instagram;
+            igLink.style.display = 'flex';
+        } else {
+            igLink.style.display = 'none';
+        }
+    }
     const ytLink = document.getElementById('social-yt');
-    if (ytLink) ytLink.href = websiteSettings.youtube;
+    if (ytLink) {
+        if (websiteSettings.showYoutube) {
+            ytLink.href = websiteSettings.youtube;
+            ytLink.style.display = 'flex';
+        } else {
+            ytLink.style.display = 'none';
+        }
+    }
     const ttLink = document.getElementById('social-tt');
-    if (ttLink) ttLink.href = websiteSettings.tiktok;
+    if (ttLink) {
+        if (websiteSettings.showTiktok) {
+            ttLink.href = websiteSettings.tiktok;
+            ttLink.style.display = 'flex';
+        } else {
+            ttLink.style.display = 'none';
+        }
+    }
 
-    const zaloQR = document.getElementById('zalo-qr');
-    if (zaloQR) zaloQR.src = websiteSettings.zaloQR;
+    // QR Zalo
+    const zaloSection = document.getElementById('footer-zalo');
+    if (zaloSection) {
+        if (websiteSettings.showZaloQR) {
+            zaloSection.style.display = 'block';
+            const zaloQR = document.getElementById('zalo-qr');
+            if (zaloQR) zaloQR.src = websiteSettings.zaloQR;
+        } else {
+            zaloSection.style.display = 'none';
+        }
+    }
 
+    // Copyright
     const copyright = document.getElementById('copyright');
-    if (copyright) copyright.textContent = websiteSettings.footerCopyright;
+    if (copyright) {
+        if (websiteSettings.showCopyright) {
+            copyright.textContent = websiteSettings.footerCopyright;
+            copyright.style.display = 'block';
+        } else {
+            copyright.style.display = 'none';
+        }
+    }
 }
 
 // Khởi tạo sự kiện

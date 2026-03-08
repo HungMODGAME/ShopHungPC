@@ -1,4 +1,4 @@
-// Tham chiếu Firebase (được khởi tạo từ HTML)
+// Tham chiếu Firebase
 const shopDataRef = database.ref('shopData');
 const settingsRef = database.ref('websiteSettings');
 
@@ -14,43 +14,34 @@ let websiteSettings = {};
 let selectedMainCategoryId = null;
 let selectedSubCategoryId = null;
 
+// Hàm chuẩn hóa dữ liệu (đảm bảo các mảng tồn tại)
+function normalizeData() {
+    data.products = data.products || [];
+    
+    data.mainCategories = (data.mainCategories || []).map(cat => ({
+        ...cat,
+        subCategories: cat.subCategories || []
+    }));
+    
+    data.subCategories = (data.subCategories || []).map(sub => ({
+        ...sub,
+        products: sub.products || []
+    }));
+}
+
 // Lắng nghe dữ liệu sản phẩm
 shopDataRef.on('value', (snapshot) => {
+    console.log('shopData changed');
     const val = snapshot.val();
     if (val) {
         data = val;
+        normalizeData(); // <<< THÊM DÒNG NÀY
     } else {
-        // Dữ liệu mẫu
+        // Khởi tạo cấu trúc rỗng
         data = {
-            mainCategories: [
-                { id: 1, name: "Điện thoại", image: "https://via.placeholder.com/100x100/3498db/ffffff?text=Phone", subCategories: [1, 2] },
-                { id: 2, name: "Laptop", image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=Laptop", subCategories: [3, 4] },
-                { id: 3, name: "Phụ kiện", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Accessories", subCategories: [5, 6, 7] },
-                { id: 4, name: "Free Fire", image: "https://via.placeholder.com/100x100/ff6b6b/ffffff?text=Free+Fire", subCategories: [8, 9] }
-            ],
-            subCategories: [
-                { id: 1, name: "iPhone", image: "https://via.placeholder.com/100x100/3498db/ffffff?text=iPhone", mainCategoryId: 1, products: [1, 2] },
-                { id: 2, name: "Samsung", image: "https://via.placeholder.com/100x100/3498db/ffffff?text=Samsung", mainCategoryId: 1, products: [3, 4] },
-                { id: 3, name: "MacBook", image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=MacBook", mainCategoryId: 2, products: [5] },
-                { id: 4, name: "Dell", image: "https://via.placeholder.com/100x100/e74c3c/ffffff?text=Dell", mainCategoryId: 2, products: [6] },
-                { id: 5, name: "Tai nghe", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Headphones", mainCategoryId: 3, products: [7, 8] },
-                { id: 6, name: "Sạc dự phòng", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Powerbank", mainCategoryId: 3, products: [9] },
-                { id: 7, name: "Ốp lưng", image: "https://via.placeholder.com/100x100/f1c40f/000000?text=Case", mainCategoryId: 3, products: [10] },
-                { id: 8, name: "Nhân vật", image: "https://via.placeholder.com/100x100/ff6b6b/ffffff?text=Characters", mainCategoryId: 4, products: [] },
-                { id: 9, name: "Vũ khí", image: "https://via.placeholder.com/100x100/ff6b6b/ffffff?text=Weapons", mainCategoryId: 4, products: [] }
-            ],
-            products: [
-                { id: 1, code: "IP14PM", name: "iPhone 14 Pro Max", price: 33990000, images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+2", "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+Max+3"], status: "online", description: "iPhone 14 Pro Max - Siêu phẩm mới nhất từ Apple", subCategoryId: 1, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" },
-                { id: 2, code: "IP14P", name: "iPhone 14 Pro", price: 29990000, images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=iPhone+14+Pro+2"], status: "online", description: "iPhone 14 Pro - Màn hình Always-On", subCategoryId: 1, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" },
-                { id: 3, code: "SS23U", name: "Samsung Galaxy S23 Ultra", price: 28990000, images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+2", "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+3", "https://via.placeholder.com/800x600/3498db/ffffff?text=S23+Ultra+4"], status: "maintenance", description: "Galaxy S23 Ultra - Camera 200MP", subCategoryId: 2, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" },
-                { id: 4, code: "SSZF5", name: "Samsung Galaxy Z Fold5", price: 41990000, images: ["https://via.placeholder.com/800x600/3498db/ffffff?text=Z+Fold5+1", "https://via.placeholder.com/800x600/3498db/ffffff?text=Z+Fold5+2"], status: "online", description: "Galaxy Z Fold5 - Điện thoại màn hình gập", subCategoryId: 2, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" },
-                { id: 5, code: "MBP14", name: "MacBook Pro 14 M3", price: 54990000, images: ["https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+1", "https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+2", "https://via.placeholder.com/800x600/e74c3c/ffffff?text=MacBook+Pro+3"], status: "online", description: "MacBook Pro với chip M3 Pro", subCategoryId: 3, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" },
-                { id: 6, code: "DXPS15", name: "Dell XPS 15", price: 45990000, images: ["https://via.placeholder.com/800x600/e74c3c/ffffff?text=Dell+XPS+1", "https://via.placeholder.com/800x600/e74c3c/ffffff?text=Dell+XPS+2"], status: "maintenance", description: "Dell XPS 15 - Laptop cao cấp", subCategoryId: 4, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" },
-                { id: 7, code: "AP2", name: "Tai nghe AirPods Pro 2", price: 6790000, images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+2", "https://via.placeholder.com/800x600/f1c40f/000000?text=AirPods+Pro+3"], status: "online", description: "AirPods Pro 2 - Chống ồn chủ động", subCategoryId: 5, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" },
-                { id: 8, code: "SONY5", name: "Tai nghe Sony WH-1000XM5", price: 8990000, images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=Sony+WH-1000XM5+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=Sony+WH-1000XM5+2"], status: "online", description: "Tai nghe chống ồn cao cấp", subCategoryId: 5, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" },
-                { id: 9, code: "ANKER20", name: "Sạc dự phòng Anker 20000mAh", price: 1290000, images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+2", "https://via.placeholder.com/800x600/f1c40f/000000?text=Anker+Powerbank+3"], status: "online", description: "Sạc dự phòng dung lượng lớn", subCategoryId: 6, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" },
-                { id: 10, code: "OP14", name: "Ốp lưng MagSafe iPhone 14", price: 890000, images: ["https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+1", "https://via.placeholder.com/800x600/f1c40f/000000?text=MagSafe+Case+2"], status: "maintenance", description: "Ốp lưng chính hãng Apple", subCategoryId: 7, zalo: "https://zalo.me/0123456789", telegram: "https://t.me/shoponline" }
-            ]
+            mainCategories: [],
+            subCategories: [],
+            products: []
         };
         shopDataRef.set(data);
     }
@@ -59,11 +50,13 @@ shopDataRef.on('value', (snapshot) => {
 
 // Lắng nghe cài đặt website
 settingsRef.on('value', (snapshot) => {
+    console.log('settings changed');
     const val = snapshot.val();
     if (val) {
         websiteSettings = val;
     } else {
         websiteSettings = {
+            shopName: "Tên cửa hàng",
             logo: "https://via.placeholder.com/150x50/4CAF50/ffffff?text=LOGO+SHOP",
             aboutText: "ShopOnline - Địa chỉ mua sắm tin cậy của bạn với đa dạng sản phẩm công nghệ chính hãng, chất lượng cao.",
             phone: "0123 456 789",
@@ -75,14 +68,28 @@ settingsRef.on('value', (snapshot) => {
             youtube: "#",
             tiktok: "#",
             zaloQR: "https://via.placeholder.com/100x100/3498db/ffffff?text=QR+Code",
-            footerCopyright: "© 2024 ShopOnline. Tất cả quyền được bảo lưu."
+            footerCopyright: "© 2024 ShopOnline. Tất cả quyền được bảo lưu.",
+            // Các checkbox hiển thị
+            showShopName: true,
+            showLogo: true,
+            showAboutText: true,
+            showPhone: true,
+            showEmail: true,
+            showAddress: true,
+            showWorkingHours: true,
+            showFacebook: true,
+            showInstagram: true,
+            showYoutube: true,
+            showTiktok: true,
+            showZaloQR: true,
+            showCopyright: true
         };
         settingsRef.set(websiteSettings);
     }
     renderSettingsForm();
 });
 
-// Hàm lưu dữ liệu (gọi sau mỗi thao tác thay đổi)
+// Hàm lưu dữ liệu
 function saveData() {
     shopDataRef.set(data);
 }
@@ -100,20 +107,26 @@ function formatPrice(price) {
 function showNotification(message, type = 'success') {
     if (!settings.showNotifications) return;
     const notification = document.getElementById('notification');
-    notification.textContent = message;
-    notification.className = `notification ${type}`;
-    notification.style.display = 'block';
-    setTimeout(() => {
-        notification.style.display = 'none';
-    }, 3000);
+    if (notification) {
+        notification.textContent = message;
+        notification.className = `notification ${type}`;
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 3000);
+    }
 }
 
 // Cập nhật dashboard
 function updateDashboardStats() {
-    document.getElementById('totalProducts').textContent = data.products.length;
-    document.getElementById('totalMainCategories').textContent = data.mainCategories.length;
-    document.getElementById('totalSubCategories').textContent = data.subCategories.length;
-    document.getElementById('totalOnline').textContent = data.products.filter(p => p.status === 'online').length;
+    const totalProductsEl = document.getElementById('totalProducts');
+    if (totalProductsEl) totalProductsEl.textContent = data.products.length;
+    const totalMainCategoriesEl = document.getElementById('totalMainCategories');
+    if (totalMainCategoriesEl) totalMainCategoriesEl.textContent = data.mainCategories.length;
+    const totalSubCategoriesEl = document.getElementById('totalSubCategories');
+    if (totalSubCategoriesEl) totalSubCategoriesEl.textContent = data.subCategories.length;
+    const totalOnlineEl = document.getElementById('totalOnline');
+    if (totalOnlineEl) totalOnlineEl.textContent = data.products.filter(p => p.status === 'online').length;
     
     const recentProducts = data.products.slice(-5).reverse();
     const tbody = document.querySelector('#recentProducts tbody');
@@ -134,7 +147,7 @@ function updateDashboardStats() {
     }
 }
 
-// Render grid danh mục phụ cho sản phẩm
+// Render grid danh mục phụ
 function renderSubCategoryGrid() {
     const grid = document.getElementById('subCategoryGrid');
     if (!grid) return;
@@ -167,19 +180,23 @@ function selectSubCategory(subCatId) {
     const subCat = data.subCategories.find(s => s.id === subCatId);
     if (!subCat) return;
     
-    document.getElementById('selectedSubCategoryTitle').textContent = `Sản phẩm danh mục: ${subCat.name}`;
-    document.getElementById('productDetailArea').style.display = 'block';
+    const titleEl = document.getElementById('selectedSubCategoryTitle');
+    if (titleEl) titleEl.textContent = `Sản phẩm danh mục: ${subCat.name}`;
+    const areaEl = document.getElementById('productDetailArea');
+    if (areaEl) areaEl.style.display = 'block';
     renderProductsTable(subCatId);
     
     setTimeout(() => {
-        document.getElementById('productDetailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const areaEl = document.getElementById('productDetailArea');
+        if (areaEl) areaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
 }
 
 // Ẩn khu vực chi tiết sản phẩm
 function hideProductDetail() {
     selectedSubCategoryId = null;
-    document.getElementById('productDetailArea').style.display = 'none';
+    const areaEl = document.getElementById('productDetailArea');
+    if (areaEl) areaEl.style.display = 'none';
     renderSubCategoryGrid();
 }
 
@@ -273,19 +290,23 @@ function selectMainCategory(mainCatId) {
     const mainCat = data.mainCategories.find(c => c.id === mainCatId);
     if (!mainCat) return;
     
-    document.getElementById('selectedMainCategoryTitle').textContent = `Danh mục phụ của: ${mainCat.name}`;
-    document.getElementById('subCategoryDetailArea').style.display = 'block';
+    const titleEl = document.getElementById('selectedMainCategoryTitle');
+    if (titleEl) titleEl.textContent = `Danh mục phụ của: ${mainCat.name}`;
+    const areaEl = document.getElementById('subCategoryDetailArea');
+    if (areaEl) areaEl.style.display = 'block';
     renderSubCategoriesTable(mainCatId);
     
     setTimeout(() => {
-        document.getElementById('subCategoryDetailArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const areaEl = document.getElementById('subCategoryDetailArea');
+        if (areaEl) areaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
 }
 
 // Ẩn khu vực chi tiết
 function hideSubCategoryDetail() {
     selectedMainCategoryId = null;
-    document.getElementById('subCategoryDetailArea').style.display = 'none';
+    const areaEl = document.getElementById('subCategoryDetailArea');
+    if (areaEl) areaEl.style.display = 'none';
     renderMainCategoryGrid();
 }
 
@@ -321,35 +342,76 @@ function renderSubCategoriesTable(mainCatId = null) {
 
 // Render cài đặt lên form
 function renderSettingsForm() {
-    document.getElementById('settingLogo').value = websiteSettings.logo || '';
-    document.getElementById('settingAboutText').value = websiteSettings.aboutText || '';
-    document.getElementById('settingPhone').value = websiteSettings.phone || '';
-    document.getElementById('settingEmail').value = websiteSettings.email || '';
-    document.getElementById('settingAddress').value = websiteSettings.address || '';
-    document.getElementById('settingWorkingHours').value = websiteSettings.workingHours || '';
-    document.getElementById('settingFacebook').value = websiteSettings.facebook || '';
-    document.getElementById('settingInstagram').value = websiteSettings.instagram || '';
-    document.getElementById('settingYoutube').value = websiteSettings.youtube || '';
-    document.getElementById('settingTiktok').value = websiteSettings.tiktok || '';
-    document.getElementById('settingZaloQR').value = websiteSettings.zaloQR || '';
-    document.getElementById('settingCopyright').value = websiteSettings.footerCopyright || '';
+    const set = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.value = value || '';
+    };
+    const setChecked = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.checked = value === true;
+    };
+
+    set('settingShopName', websiteSettings.shopName);
+    set('settingLogo', websiteSettings.logo);
+    set('settingAboutText', websiteSettings.aboutText);
+    set('settingPhone', websiteSettings.phone);
+    set('settingEmail', websiteSettings.email);
+    set('settingAddress', websiteSettings.address);
+    set('settingWorkingHours', websiteSettings.workingHours);
+    set('settingFacebook', websiteSettings.facebook);
+    set('settingInstagram', websiteSettings.instagram);
+    set('settingYoutube', websiteSettings.youtube);
+    set('settingTiktok', websiteSettings.tiktok);
+    set('settingZaloQR', websiteSettings.zaloQR);
+    set('settingCopyright', websiteSettings.footerCopyright);
+
+    // Cập nhật checkbox
+    setChecked('showShopName', websiteSettings.showShopName);
+    setChecked('showLogo', websiteSettings.showLogo);
+    setChecked('showAboutText', websiteSettings.showAboutText);
+    setChecked('showPhone', websiteSettings.showPhone);
+    setChecked('showEmail', websiteSettings.showEmail);
+    setChecked('showAddress', websiteSettings.showAddress);
+    setChecked('showWorkingHours', websiteSettings.showWorkingHours);
+    setChecked('showFacebook', websiteSettings.showFacebook);
+    setChecked('showInstagram', websiteSettings.showInstagram);
+    setChecked('showYoutube', websiteSettings.showYoutube);
+    setChecked('showTiktok', websiteSettings.showTiktok);
+    setChecked('showZaloQR', websiteSettings.showZaloQR);
+    setChecked('showCopyright', websiteSettings.showCopyright);
 }
 
 // Lưu cài đặt từ form
 function saveSettings() {
     websiteSettings = {
-        logo: document.getElementById('settingLogo').value,
-        aboutText: document.getElementById('settingAboutText').value,
-        phone: document.getElementById('settingPhone').value,
-        email: document.getElementById('settingEmail').value,
-        address: document.getElementById('settingAddress').value,
-        workingHours: document.getElementById('settingWorkingHours').value,
-        facebook: document.getElementById('settingFacebook').value,
-        instagram: document.getElementById('settingInstagram').value,
-        youtube: document.getElementById('settingYoutube').value,
-        tiktok: document.getElementById('settingTiktok').value,
-        zaloQR: document.getElementById('settingZaloQR').value,
-        footerCopyright: document.getElementById('settingCopyright').value
+        shopName: document.getElementById('settingShopName')?.value || '',
+        logo: document.getElementById('settingLogo')?.value || '',
+        aboutText: document.getElementById('settingAboutText')?.value || '',
+        phone: document.getElementById('settingPhone')?.value || '',
+        email: document.getElementById('settingEmail')?.value || '',
+        address: document.getElementById('settingAddress')?.value || '',
+        workingHours: document.getElementById('settingWorkingHours')?.value || '',
+        facebook: document.getElementById('settingFacebook')?.value || '',
+        instagram: document.getElementById('settingInstagram')?.value || '',
+        youtube: document.getElementById('settingYoutube')?.value || '',
+        tiktok: document.getElementById('settingTiktok')?.value || '',
+        zaloQR: document.getElementById('settingZaloQR')?.value || '',
+        footerCopyright: document.getElementById('settingCopyright')?.value || '',
+
+        // Checkbox
+        showShopName: document.getElementById('showShopName')?.checked || false,
+        showLogo: document.getElementById('showLogo')?.checked || false,
+        showAboutText: document.getElementById('showAboutText')?.checked || false,
+        showPhone: document.getElementById('showPhone')?.checked || false,
+        showEmail: document.getElementById('showEmail')?.checked || false,
+        showAddress: document.getElementById('showAddress')?.checked || false,
+        showWorkingHours: document.getElementById('showWorkingHours')?.checked || false,
+        showFacebook: document.getElementById('showFacebook')?.checked || false,
+        showInstagram: document.getElementById('showInstagram')?.checked || false,
+        showYoutube: document.getElementById('showYoutube')?.checked || false,
+        showTiktok: document.getElementById('showTiktok')?.checked || false,
+        showZaloQR: document.getElementById('showZaloQR')?.checked || false,
+        showCopyright: document.getElementById('showCopyright')?.checked || false
     };
     saveWebsiteSettings();
     showNotification('Đã lưu cài đặt thành công!');
@@ -357,6 +419,7 @@ function saveSettings() {
 
 // Render tất cả bảng
 function renderAdminTables() {
+    console.log('renderAdminTables');
     renderSubCategoryGrid();
     renderMainCategoriesTable();
     renderMainCategoryGrid();
@@ -379,9 +442,11 @@ document.querySelectorAll('.sidebar-menu li').forEach(item => {
         this.classList.add('active');
         
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        document.getElementById(tabId + '-tab').classList.add('active');
+        const tabEl = document.getElementById(tabId + '-tab');
+        if (tabEl) tabEl.classList.add('active');
         
-        document.getElementById('pageTitle').textContent = this.querySelector('span').textContent;
+        const pageTitle = document.getElementById('pageTitle');
+        if (pageTitle) pageTitle.textContent = this.querySelector('span')?.textContent || '';
 
         if (tabId === 'settings') {
             renderSettingsForm();
@@ -391,69 +456,94 @@ document.querySelectorAll('.sidebar-menu li').forEach(item => {
 
 // Modal functions
 function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
+    const modal = document.getElementById(modalId);
+    if (modal) modal.style.display = 'none';
 }
 
 // Product functions
 function showAddProductModal() {
-    document.getElementById('productModalTitle').textContent = 'Thêm sản phẩm';
-    document.getElementById('productForm').reset();
-    document.getElementById('productId').value = '';
+    const titleEl = document.getElementById('productModalTitle');
+    if (titleEl) titleEl.textContent = 'Thêm sản phẩm';
+    const form = document.getElementById('productForm');
+    if (form) form.reset();
+    const idEl = document.getElementById('productId');
+    if (idEl) idEl.value = '';
     
     const select = document.getElementById('productSubCategory');
-    select.innerHTML = data.subCategories.map(sub => 
-        `<option value="${sub.id}">${sub.name}</option>`
-    ).join('');
+    if (select) {
+        select.innerHTML = data.subCategories.map(sub => 
+            `<option value="${sub.id}">${sub.name}</option>`
+        ).join('');
+    }
     
-    document.getElementById('productImagesContainer').innerHTML = `
-        <div class="image-input-group">
-            <input type="url" class="product-image-input" placeholder="URL ảnh 1" required>
-        </div>
-    `;
+    const container = document.getElementById('productImagesContainer');
+    if (container) {
+        container.innerHTML = `
+            <div class="image-input-group">
+                <input type="url" class="product-image-input" placeholder="URL ảnh 1" required>
+            </div>
+        `;
+    }
     
-    document.getElementById('productModal').style.display = 'block';
+    const modal = document.getElementById('productModal');
+    if (modal) modal.style.display = 'block';
 }
 
 function editProduct(id) {
     const product = data.products.find(p => p.id === id);
     if (!product) return;
     
-    document.getElementById('productModalTitle').textContent = 'Sửa sản phẩm';
-    document.getElementById('productId').value = product.id;
-    document.getElementById('productCode').value = product.code;
-    document.getElementById('productName').value = product.name;
-    document.getElementById('productPrice').value = product.price;
-    document.getElementById('productStatus').value = product.status;
-    document.getElementById('productDescription').value = product.description || '';
-    document.getElementById('productZalo').value = product.zalo || '';
-    document.getElementById('productTelegram').value = product.telegram || '';
+    const titleEl = document.getElementById('productModalTitle');
+    if (titleEl) titleEl.textContent = 'Sửa sản phẩm';
+    const idEl = document.getElementById('productId');
+    if (idEl) idEl.value = product.id;
+    const codeEl = document.getElementById('productCode');
+    if (codeEl) codeEl.value = product.code;
+    const nameEl = document.getElementById('productName');
+    if (nameEl) nameEl.value = product.name;
+    const priceEl = document.getElementById('productPrice');
+    if (priceEl) priceEl.value = product.price;
+    const statusEl = document.getElementById('productStatus');
+    if (statusEl) statusEl.value = product.status;
+    const descEl = document.getElementById('productDescription');
+    if (descEl) descEl.value = product.description || '';
+    const zaloEl = document.getElementById('productZalo');
+    if (zaloEl) zaloEl.value = product.zalo || '';
+    const teleEl = document.getElementById('productTelegram');
+    if (teleEl) teleEl.value = product.telegram || '';
     
     const select = document.getElementById('productSubCategory');
-    select.innerHTML = data.subCategories.map(sub => 
-        `<option value="${sub.id}" ${sub.id === product.subCategoryId ? 'selected' : ''}>${sub.name}</option>`
-    ).join('');
-    
-    const imagesContainer = document.getElementById('productImagesContainer');
-    imagesContainer.innerHTML = '';
-    if (product.images && product.images.length > 0) {
-        product.images.forEach((img, index) => {
-            const div = document.createElement('div');
-            div.className = 'image-input-group';
-            div.innerHTML = `
-                <input type="url" class="product-image-input" value="${img}" placeholder="URL ảnh ${index + 1}" required>
-                <button type="button" class="btn-remove-image" onclick="removeImageInput(this)"><i class="fas fa-times"></i></button>
-            `;
-            imagesContainer.appendChild(div);
-        });
-    } else {
-        imagesContainer.innerHTML = '<div class="image-input-group"><input type="url" class="product-image-input" placeholder="URL ảnh 1" required></div>';
+    if (select) {
+        select.innerHTML = data.subCategories.map(sub => 
+            `<option value="${sub.id}" ${sub.id === product.subCategoryId ? 'selected' : ''}>${sub.name}</option>`
+        ).join('');
     }
     
-    document.getElementById('productModal').style.display = 'block';
+    const imagesContainer = document.getElementById('productImagesContainer');
+    if (imagesContainer) {
+        imagesContainer.innerHTML = '';
+        if (product.images && product.images.length > 0) {
+            product.images.forEach((img, index) => {
+                const div = document.createElement('div');
+                div.className = 'image-input-group';
+                div.innerHTML = `
+                    <input type="url" class="product-image-input" value="${img}" placeholder="URL ảnh ${index + 1}" required>
+                    <button type="button" class="btn-remove-image" onclick="removeImageInput(this)"><i class="fas fa-times"></i></button>
+                `;
+                imagesContainer.appendChild(div);
+            });
+        } else {
+            imagesContainer.innerHTML = '<div class="image-input-group"><input type="url" class="product-image-input" placeholder="URL ảnh 1" required></div>';
+        }
+    }
+    
+    const modal = document.getElementById('productModal');
+    if (modal) modal.style.display = 'block';
 }
 
 function addImageInput() {
     const container = document.getElementById('productImagesContainer');
+    if (!container) return;
     const index = container.children.length + 1;
     const div = document.createElement('div');
     div.className = 'image-input-group';
@@ -466,6 +556,7 @@ function addImageInput() {
 
 function removeImageInput(button) {
     const container = document.getElementById('productImagesContainer');
+    if (!container) return;
     if (container.children.length > 1) {
         button.parentElement.remove();
     } else {
@@ -476,7 +567,7 @@ function removeImageInput(button) {
 function saveProduct(event) {
     event.preventDefault();
     
-    const id = document.getElementById('productId').value;
+    const id = document.getElementById('productId')?.value;
     
     const imageInputs = document.querySelectorAll('.product-image-input');
     const images = Array.from(imageInputs).map(input => input.value.trim()).filter(url => url !== '');
@@ -487,23 +578,25 @@ function saveProduct(event) {
     }
     
     const productData = {
-        code: document.getElementById('productCode').value,
-        name: document.getElementById('productName').value,
-        price: parseInt(document.getElementById('productPrice').value),
+        code: document.getElementById('productCode')?.value,
+        name: document.getElementById('productName')?.value,
+        price: parseInt(document.getElementById('productPrice')?.value),
         images: images,
-        subCategoryId: parseInt(document.getElementById('productSubCategory').value),
-        status: document.getElementById('productStatus').value,
-        description: document.getElementById('productDescription').value,
-        zalo: document.getElementById('productZalo').value,
-        telegram: document.getElementById('productTelegram').value
+        subCategoryId: parseInt(document.getElementById('productSubCategory')?.value),
+        status: document.getElementById('productStatus')?.value,
+        description: document.getElementById('productDescription')?.value,
+        zalo: document.getElementById('productZalo')?.value,
+        telegram: document.getElementById('productTelegram')?.value
     };
     
     if (id) {
+        // Edit
         const index = data.products.findIndex(p => p.id === parseInt(id));
         if (index !== -1) {
             const oldProduct = data.products[index];
             data.products[index] = { ...oldProduct, ...productData };
             
+            // Nếu chuyển danh mục phụ, cập nhật mảng products của cả hai danh mục
             if (oldProduct.subCategoryId !== productData.subCategoryId) {
                 const oldSubCat = data.subCategories.find(s => s.id === oldProduct.subCategoryId);
                 if (oldSubCat) {
@@ -512,6 +605,7 @@ function saveProduct(event) {
                 
                 const newSubCat = data.subCategories.find(s => s.id === productData.subCategoryId);
                 if (newSubCat) {
+                    if (!newSubCat.products) newSubCat.products = []; // an toàn
                     newSubCat.products.push(parseInt(id));
                 }
             }
@@ -519,12 +613,14 @@ function saveProduct(event) {
             showNotification('Cập nhật sản phẩm thành công!');
         }
     } else {
+        // Add mới
         const newId = Math.max(...data.products.map(p => p.id), 0) + 1;
         const newProduct = { id: newId, ...productData };
         data.products.push(newProduct);
         
         const subCat = data.subCategories.find(s => s.id === productData.subCategoryId);
         if (subCat) {
+            if (!subCat.products) subCat.products = []; // an toàn
             subCat.products.push(newId);
         }
         
@@ -532,7 +628,6 @@ function saveProduct(event) {
     }
     
     saveData();
-    // Không cần gọi render vì sự kiện on('value') sẽ tự cập nhật
     closeModal('productModal');
 }
 
@@ -545,7 +640,7 @@ function deleteProduct(id) {
     if (!product) return;
     
     const subCat = data.subCategories.find(s => s.id === product.subCategoryId);
-    if (subCat) {
+    if (subCat && subCat.products) {
         subCat.products = subCat.products.filter(pid => pid !== id);
     }
     
@@ -557,30 +652,39 @@ function deleteProduct(id) {
 
 // Main Category functions
 function showAddMainCategoryModal() {
-    document.getElementById('mainCategoryModalTitle').textContent = 'Thêm danh mục chính';
-    document.getElementById('mainCategoryForm').reset();
-    document.getElementById('mainCategoryId').value = '';
-    document.getElementById('mainCategoryModal').style.display = 'block';
+    const titleEl = document.getElementById('mainCategoryModalTitle');
+    if (titleEl) titleEl.textContent = 'Thêm danh mục chính';
+    const form = document.getElementById('mainCategoryForm');
+    if (form) form.reset();
+    const idEl = document.getElementById('mainCategoryId');
+    if (idEl) idEl.value = '';
+    const modal = document.getElementById('mainCategoryModal');
+    if (modal) modal.style.display = 'block';
 }
 
 function editMainCategory(id) {
     const category = data.mainCategories.find(c => c.id === id);
     if (!category) return;
     
-    document.getElementById('mainCategoryModalTitle').textContent = 'Sửa danh mục chính';
-    document.getElementById('mainCategoryId').value = category.id;
-    document.getElementById('mainCategoryName').value = category.name;
-    document.getElementById('mainCategoryImage').value = category.image;
-    document.getElementById('mainCategoryModal').style.display = 'block';
+    const titleEl = document.getElementById('mainCategoryModalTitle');
+    if (titleEl) titleEl.textContent = 'Sửa danh mục chính';
+    const idEl = document.getElementById('mainCategoryId');
+    if (idEl) idEl.value = category.id;
+    const nameEl = document.getElementById('mainCategoryName');
+    if (nameEl) nameEl.value = category.name;
+    const imgEl = document.getElementById('mainCategoryImage');
+    if (imgEl) imgEl.value = category.image;
+    const modal = document.getElementById('mainCategoryModal');
+    if (modal) modal.style.display = 'block';
 }
 
 function saveMainCategory(event) {
     event.preventDefault();
     
-    const id = document.getElementById('mainCategoryId').value;
+    const id = document.getElementById('mainCategoryId')?.value;
     const categoryData = {
-        name: document.getElementById('mainCategoryName').value,
-        image: document.getElementById('mainCategoryImage').value
+        name: document.getElementById('mainCategoryName')?.value,
+        image: document.getElementById('mainCategoryImage')?.value
     };
     
     if (id) {
@@ -623,43 +727,56 @@ function deleteMainCategory(id) {
 
 // SubCategory functions
 function showAddSubCategoryModal() {
-    document.getElementById('subCategoryModalTitle').textContent = 'Thêm danh mục phụ';
-    document.getElementById('subCategoryForm').reset();
-    document.getElementById('subCategoryId').value = '';
+    const titleEl = document.getElementById('subCategoryModalTitle');
+    if (titleEl) titleEl.textContent = 'Thêm danh mục phụ';
+    const form = document.getElementById('subCategoryForm');
+    if (form) form.reset();
+    const idEl = document.getElementById('subCategoryId');
+    if (idEl) idEl.value = '';
     
     const select = document.getElementById('subCategoryMain');
-    select.innerHTML = data.mainCategories.map(cat => 
-        `<option value="${cat.id}">${cat.name}</option>`
-    ).join('');
+    if (select) {
+        select.innerHTML = data.mainCategories.map(cat => 
+            `<option value="${cat.id}">${cat.name}</option>`
+        ).join('');
+    }
     
-    document.getElementById('subCategoryModal').style.display = 'block';
+    const modal = document.getElementById('subCategoryModal');
+    if (modal) modal.style.display = 'block';
 }
 
 function editSubCategory(id) {
     const subCat = data.subCategories.find(s => s.id === id);
     if (!subCat) return;
     
-    document.getElementById('subCategoryModalTitle').textContent = 'Sửa danh mục phụ';
-    document.getElementById('subCategoryId').value = subCat.id;
-    document.getElementById('subCategoryName').value = subCat.name;
-    document.getElementById('subCategoryImage').value = subCat.image;
+    const titleEl = document.getElementById('subCategoryModalTitle');
+    if (titleEl) titleEl.textContent = 'Sửa danh mục phụ';
+    const idEl = document.getElementById('subCategoryId');
+    if (idEl) idEl.value = subCat.id;
+    const nameEl = document.getElementById('subCategoryName');
+    if (nameEl) nameEl.value = subCat.name;
+    const imgEl = document.getElementById('subCategoryImage');
+    if (imgEl) imgEl.value = subCat.image;
     
     const select = document.getElementById('subCategoryMain');
-    select.innerHTML = data.mainCategories.map(cat => 
-        `<option value="${cat.id}" ${cat.id === subCat.mainCategoryId ? 'selected' : ''}>${cat.name}</option>`
-    ).join('');
+    if (select) {
+        select.innerHTML = data.mainCategories.map(cat => 
+            `<option value="${cat.id}" ${cat.id === subCat.mainCategoryId ? 'selected' : ''}>${cat.name}</option>`
+        ).join('');
+    }
     
-    document.getElementById('subCategoryModal').style.display = 'block';
+    const modal = document.getElementById('subCategoryModal');
+    if (modal) modal.style.display = 'block';
 }
 
 function saveSubCategory(event) {
     event.preventDefault();
     
-    const id = document.getElementById('subCategoryId').value;
-    const mainCatId = parseInt(document.getElementById('subCategoryMain').value);
+    const id = document.getElementById('subCategoryId')?.value;
+    const mainCatId = parseInt(document.getElementById('subCategoryMain')?.value);
     const subCatData = {
-        name: document.getElementById('subCategoryName').value,
-        image: document.getElementById('subCategoryImage').value,
+        name: document.getElementById('subCategoryName')?.value,
+        image: document.getElementById('subCategoryImage')?.value,
         mainCategoryId: mainCatId
     };
     
@@ -676,6 +793,7 @@ function saveSubCategory(event) {
                 
                 const newMainCat = data.mainCategories.find(m => m.id === mainCatId);
                 if (newMainCat) {
+                    if (!newMainCat.subCategories) newMainCat.subCategories = [];
                     newMainCat.subCategories.push(parseInt(id));
                 }
             }
@@ -690,6 +808,7 @@ function saveSubCategory(event) {
         
         const mainCat = data.mainCategories.find(m => m.id === mainCatId);
         if (mainCat) {
+            if (!mainCat.subCategories) mainCat.subCategories = [];
             mainCat.subCategories.push(newId);
         }
         

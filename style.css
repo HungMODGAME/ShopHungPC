@@ -735,3 +735,21 @@ footer {
         height: 60px;
     }
 }
+
+/* Không xuống dòng cho các mục trong policy */
+#footer-policy ul li a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+}
+
+/* Xử lý hiển thị cho mục ĐIỀU KHOẢN SỬ DỤNG */
+#footer-policy ul li a {
+    white-space: nowrap;        /* Giữ trên một dòng */
+    overflow: visible;          /* Cho phép tràn ra ngoài */
+    text-overflow: clip;        /* Cắt bỏ, không dấu ... */
+    max-width: none;            /* Bỏ giới hạn chiều rộng */
+    display: block;
+}
