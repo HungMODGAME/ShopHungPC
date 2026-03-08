@@ -11,6 +11,17 @@ shopDataRef.on('value', (snapshot) => {
     const val = snapshot.val();
     if (val) {
         data = val;
+        // Chuyển đổi sản phẩm cũ (chỉ có price) sang định dạng mới
+        if (data.products) {
+            data.products = data.products.map(p => {
+                if (!p.prices && p.price) {
+                    p.prices = [{ price: p.price, duration: 'Giá' }];
+                } else if (!p.prices) {
+                    p.prices = [];
+                }
+                return p;
+            });
+        }
     } else {
         // Khởi tạo cấu trúc dữ liệu rỗng
         data = {
@@ -18,7 +29,6 @@ shopDataRef.on('value', (snapshot) => {
             subCategories: [],
             products: []
         };
-        // Ghi lên database để đồng bộ (không bắt buộc, nhưng nên có)
         shopDataRef.set(data);
     }
     renderCategories();
@@ -205,7 +215,12 @@ function searchProducts() {
     }
 }
 
-// Hiển thị sản phẩm (dạng card)
+// Format giá tiền
+function formatPrice(price) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+}
+
+// Hiển thị sản phẩm (dạng card) - có danh sách giá
 function renderProducts(products, title) {
     const productGrid = document.getElementById('productGrid');
     const categoryTitle = document.getElementById('categoryTitle');
@@ -232,6 +247,23 @@ function renderProducts(products, title) {
         
         const mainImage = product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/400x300/cccccc/000000?text=No+Image';
         
+        // Tạo HTML cho danh sách giá
+        let pricesHtml = '';
+        if (product.prices && product.prices.length > 0) {
+            pricesHtml = '<div class="product-prices">';
+            product.prices.forEach(p => {
+                pricesHtml += `
+                    <div class="price-item">
+                        <span class="price-value">${formatPrice(p.price)}</span>
+                        <span class="price-duration">/ ${p.duration}</span>
+                    </div>
+                `;
+            });
+            pricesHtml += '</div>';
+        } else {
+            pricesHtml = '<div class="product-price">Liên hệ</div>';
+        }
+        
         productCard.innerHTML = `
             <div class="product-badge">${product.code || 'SP' + product.id}</div>
             <div class="product-image">
@@ -239,7 +271,7 @@ function renderProducts(products, title) {
             </div>
             <div class="product-info">
                 <h3>${product.name}</h3>
-                <div class="product-price">${formatPrice(product.price)}</div>
+                ${pricesHtml}
                 <span class="product-status ${statusClass}">${statusText}</span>
                 <div class="product-actions">
                     <button class="btn-zalo" onclick="event.stopPropagation(); contactZalo('${product.zalo}')">
@@ -257,11 +289,6 @@ function renderProducts(products, title) {
         
         productGrid.appendChild(productCard);
     });
-}
-
-// Format giá tiền
-function formatPrice(price) {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
 }
 
 // Liên hệ Zalo
@@ -296,7 +323,7 @@ function changeMainImage(element, imageUrl) {
     }
 }
 
-// Hiển thị chi tiết sản phẩm
+// Hiển thị chi tiết sản phẩm (modal)
 function showProductDetail(productId) {
     const product = data.products.find(p => p.id === productId);
     if (!product) return;
@@ -307,7 +334,24 @@ function showProductDetail(productId) {
     const statusClass = product.status === 'online' ? 'status-online' : 'status-maintenance';
     const statusText = product.status === 'online' ? 'Online' : 'Bảo trì';
     
-    const description = product.description.replace(/\n/g, '<br>');
+    const description = product.description ? product.description.replace(/\n/g, '<br>') : '';
+    
+    // Tạo HTML cho danh sách giá (modal)
+    let priceListHtml = '';
+    if (product.prices && product.prices.length > 0) {
+        priceListHtml = '<div class="product-price-list">';
+        product.prices.forEach(p => {
+            priceListHtml += `
+                <div class="price-item">
+                    <span class="price-value">${formatPrice(p.price)}</span>
+                    <span class="price-duration">/ ${p.duration}</span>
+                </div>
+            `;
+        });
+        priceListHtml += '</div>';
+    } else {
+        priceListHtml = '<div class="product-price">Liên hệ</div>';
+    }
     
     let galleryHtml = '';
     if (product.images && product.images.length > 0) {
@@ -344,7 +388,7 @@ function showProductDetail(productId) {
             <div class="product-detail-info">
                 <h2>${product.name}</h2>
                 <div class="product-detail-code">Mã SP: ${product.code || 'SP' + product.id}</div>
-                <div class="product-detail-price">${formatPrice(product.price)}</div>
+                ${priceListHtml}
                 <span class="product-detail-status ${statusClass}">${statusText}</span>
                 <div class="product-detail-desc">${description}</div>
                 <div class="product-detail-actions">

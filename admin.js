@@ -18,6 +18,17 @@ let selectedSubCategoryId = null;
 function normalizeData() {
     data.products = data.products || [];
     
+    // Đảm bảo mỗi sản phẩm có mảng prices
+    data.products = data.products.map(p => {
+        if (!p.prices && p.price) {
+            // Chuyển đổi dữ liệu cũ
+            p.prices = [{ price: p.price, duration: 'Giá' }];
+        } else if (!p.prices) {
+            p.prices = [];
+        }
+        return p;
+    });
+    
     data.mainCategories = (data.mainCategories || []).map(cat => ({
         ...cat,
         subCategories: cat.subCategories || []
@@ -133,12 +144,20 @@ function updateDashboardStats() {
     if (tbody) {
         tbody.innerHTML = recentProducts.map(product => {
             const subCat = data.subCategories.find(s => s.id === product.subCategoryId);
+            // Hiển thị giá thấp nhất trong dashboard
+            let displayPrice = '';
+            if (product.prices && product.prices.length > 0) {
+                const minPrice = Math.min(...product.prices.map(p => p.price));
+                displayPrice = formatPrice(minPrice);
+            } else {
+                displayPrice = 'Liên hệ';
+            }
             return `
                 <tr>
                     <td>${product.id}</td>
                     <td>${product.code}</td>
                     <td>${product.name}</td>
-                    <td>${formatPrice(product.price)}</td>
+                    <td>${displayPrice}</td>
                     <td><span class="status-badge status-${product.status}">${product.status === 'online' ? 'Online' : 'Bảo trì'}</span></td>
                     <td>${subCat ? subCat.name : 'N/A'}</td>
                 </tr>
@@ -215,13 +234,25 @@ function renderProductsTable(subCatId = null) {
     }
     
     tbody.innerHTML = products.map(product => {
+        // Hiển thị giá dạng "Từ ..." nếu có nhiều mức
+        let displayPrice = '';
+        if (product.prices && product.prices.length > 0) {
+            const minPrice = Math.min(...product.prices.map(p => p.price));
+            displayPrice = formatPrice(minPrice);
+            if (product.prices.length > 1) {
+                displayPrice = 'Từ ' + displayPrice;
+            }
+        } else {
+            displayPrice = 'Liên hệ';
+        }
+        
         return `
             <tr>
                 <td>${product.id}</td>
                 <td><img src="${product.images && product.images.length > 0 ? product.images[0] : 'https://via.placeholder.com/50x50/cccccc/000000?text=No+Image'}" alt="${product.name}" onerror="if(!this.src.includes('data:image')) this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\' viewBox=\'0 0 50 50\'%3E%3Crect width=\'50\' height=\'50\' fill=\'%23cccccc\'/%3E%3Ctext x=\'5\' y=\'30\' font-size=\'12\' fill=\'%23000\'%3ENo img%3C/text%3E%3C/svg%3E';"></td>
                 <td>${product.code}</td>
                 <td>${product.name}</td>
-                <td>${formatPrice(product.price)}</td>
+                <td>${displayPrice}</td>
                 <td><span class="status-badge status-${product.status}">${product.status === 'online' ? 'Online' : 'Bảo trì'}</span></td>
                 <td>
                     <button class="btn-edit" onclick="editProduct(${product.id})"><i class="fas fa-edit"></i></button>
@@ -460,6 +491,33 @@ function closeModal(modalId) {
     if (modal) modal.style.display = 'none';
 }
 
+// ==================== HÀM XỬ LÝ DÒNG GIÁ ====================
+function addPricingRow(duration = '', price = '') {
+    const container = document.getElementById('pricingContainer');
+    if (!container) return;
+    
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'image-input-group';
+    
+    rowDiv.innerHTML = `
+        <input type="number" class="pricing-price" placeholder="Giá" value="${price}" min="0" required style="width: 120px;">
+        <input type="text" class="pricing-duration" placeholder="Mô tả (vd: Ngày)" value="${duration}" required style="flex: 1;">
+        <button type="button" class="btn-remove-image" onclick="removePricingRow(this)"><i class="fas fa-times"></i></button>
+    `;
+    
+    container.appendChild(rowDiv);
+}
+
+function removePricingRow(button) {
+    const container = document.getElementById('pricingContainer');
+    if (!container) return;
+    if (container.children.length > 1) {
+        button.parentElement.remove();
+    } else {
+        showNotification('Phải có ít nhất một mức giá', 'warning');
+    }
+}
+
 // Product functions
 function showAddProductModal() {
     const titleEl = document.getElementById('productModalTitle');
@@ -474,6 +532,13 @@ function showAddProductModal() {
         select.innerHTML = data.subCategories.map(sub => 
             `<option value="${sub.id}">${sub.name}</option>`
         ).join('');
+    }
+    
+    // Reset pricing container
+    const pricingContainer = document.getElementById('pricingContainer');
+    if (pricingContainer) {
+        pricingContainer.innerHTML = '';
+        addPricingRow(); // thêm một dòng trống
     }
     
     const container = document.getElementById('productImagesContainer');
@@ -501,8 +566,6 @@ function editProduct(id) {
     if (codeEl) codeEl.value = product.code;
     const nameEl = document.getElementById('productName');
     if (nameEl) nameEl.value = product.name;
-    const priceEl = document.getElementById('productPrice');
-    if (priceEl) priceEl.value = product.price;
     const statusEl = document.getElementById('productStatus');
     if (statusEl) statusEl.value = product.status;
     const descEl = document.getElementById('productDescription');
@@ -517,6 +580,18 @@ function editProduct(id) {
         select.innerHTML = data.subCategories.map(sub => 
             `<option value="${sub.id}" ${sub.id === product.subCategoryId ? 'selected' : ''}>${sub.name}</option>`
         ).join('');
+    }
+    
+    // Xử lý pricing container
+    const pricingContainer = document.getElementById('pricingContainer');
+    if (pricingContainer) {
+        pricingContainer.innerHTML = '';
+        const prices = product.prices && product.prices.length > 0 
+            ? product.prices 
+            : [{ price: product.price || 0, duration: 'Giá' }];
+        prices.forEach(p => {
+            addPricingRow(p.duration, p.price);
+        });
     }
     
     const imagesContainer = document.getElementById('productImagesContainer');
@@ -569,6 +644,25 @@ function saveProduct(event) {
     
     const id = document.getElementById('productId')?.value;
     
+    // Thu thập các mức giá
+    const priceRows = document.querySelectorAll('#pricingContainer .image-input-group');
+    const prices = [];
+    for (let row of priceRows) {
+        const priceInput = row.querySelector('.pricing-price');
+        const durationInput = row.querySelector('.pricing-duration');
+        if (priceInput && durationInput && priceInput.value && durationInput.value) {
+            prices.push({
+                price: parseInt(priceInput.value),
+                duration: durationInput.value.trim()
+            });
+        }
+    }
+    
+    if (prices.length === 0) {
+        showNotification('Vui lòng nhập ít nhất một mức giá', 'error');
+        return;
+    }
+    
     const imageInputs = document.querySelectorAll('.product-image-input');
     const images = Array.from(imageInputs).map(input => input.value.trim()).filter(url => url !== '');
     
@@ -580,7 +674,7 @@ function saveProduct(event) {
     const productData = {
         code: document.getElementById('productCode')?.value,
         name: document.getElementById('productName')?.value,
-        price: parseInt(document.getElementById('productPrice')?.value),
+        prices: prices,  // lưu mảng prices
         images: images,
         subCategoryId: parseInt(document.getElementById('productSubCategory')?.value),
         status: document.getElementById('productStatus')?.value,
@@ -605,7 +699,7 @@ function saveProduct(event) {
                 
                 const newSubCat = data.subCategories.find(s => s.id === productData.subCategoryId);
                 if (newSubCat) {
-                    if (!newSubCat.products) newSubCat.products = []; // an toàn
+                    if (!newSubCat.products) newSubCat.products = [];
                     newSubCat.products.push(parseInt(id));
                 }
             }
@@ -620,7 +714,7 @@ function saveProduct(event) {
         
         const subCat = data.subCategories.find(s => s.id === productData.subCategoryId);
         if (subCat) {
-            if (!subCat.products) subCat.products = []; // an toàn
+            if (!subCat.products) subCat.products = [];
             subCat.products.push(newId);
         }
         
@@ -873,4 +967,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.selectSubCategory = selectSubCategory;
     window.hideProductDetail = hideProductDetail;
     window.saveSettings = saveSettings;
+    
+    // Hàm xử lý dòng giá
+    window.addPricingRow = addPricingRow;
+    window.removePricingRow = removePricingRow;
 });

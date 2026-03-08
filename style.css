@@ -766,3 +766,72 @@ footer {
         text-overflow: clip;
     }
 }
+
+/* Thêm vào cuối file style.css */
+
+/* Danh sách giá trong modal */
+.product-price-list {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.price-item:last-child {
+    border-bottom: none;
+}
+
+.price-value {
+    font-weight: bold;
+    color: #e74c3c;
+    font-size: 18px;
+}
+
+.price-duration {
+    color: #666;
+    font-size: 16px;
+}
+
+/* Danh sách giá trong card sản phẩm */
+.product-prices {
+    margin: 10px 0;
+    padding: 5px 0;
+    border-top: 1px dashed #eee;
+    border-bottom: 1px dashed #eee;
+}
+
+.product-prices .price-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 14px;
+}
+
+.product-prices .price-value {
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.product-prices .price-duration {
+    color: #666;
+}
+
+/* Đảm bảo không ảnh hưởng đến modal */
+.modal .product-price-list .price-item {
+    /* giữ nguyên style modal (đã có ở trên) */
+}
+
+/* Nếu muốn điều chỉnh khoảng cách trong modal */
+.modal .product-price-list {
+    margin: 15px 0;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+}

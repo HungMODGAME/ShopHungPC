@@ -336,9 +336,16 @@
                     <input type="text" id="productName" required>
                 </div>
                 
+                <!-- Thay thế trường giá cũ bằng các mức giá -->
                 <div class="form-group">
-                    <label>Giá (VND) *</label>
-                    <input type="number" id="productPrice" required min="0">
+                    <label>Các mức giá *</label>
+                    <div id="pricingContainer">
+                        <!-- Các dòng giá sẽ được thêm bằng JavaScript -->
+                    </div>
+                    <button type="button" class="btn-add-image" onclick="addPricingRow()">
+                        <i class="fas fa-plus"></i> Thêm mức giá
+                    </button>
+                    <small>Ví dụ: 100000 / Ngày, 200000 / Tuần, 500000 / Tháng</small>
                 </div>
                 
                 <div class="form-group">
