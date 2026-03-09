@@ -1,12 +1,16 @@
 // Tham chiếu Firebase
 const shopDataRef = database.ref('shopData');
 const settingsRef = database.ref('websiteSettings');
+// NEW: Tham chiếu redirectCodes
+const redirectCodesRef = database.ref('redirectCodes');
 
 // Dữ liệu toàn cục
 let data = {};
 let websiteSettings = {};
+// NEW: Mảng lưu mã chuyển hướng
+let redirectCodes = [];
 
-// Lắng nghe thay đổi dữ liệu sản phẩm
+// Lắng nghe dữ liệu sản phẩm (giữ nguyên)
 shopDataRef.on('value', (snapshot) => {
     const val = snapshot.val();
     if (val) {
@@ -34,7 +38,7 @@ shopDataRef.on('value', (snapshot) => {
     renderCategories();
 });
 
-// Lắng nghe thay đổi cài đặt website
+// Lắng nghe cài đặt website (giữ nguyên)
 settingsRef.on('value', (snapshot) => {
     const val = snapshot.val();
     if (val) {
@@ -73,14 +77,14 @@ settingsRef.on('value', (snapshot) => {
     renderWebsiteSettings();
 });
 
-// Hàm lưu dữ liệu (dùng trong admin, nhưng trang chủ không ghi)
-function saveData() {
-    shopDataRef.set(data);
-}
+// NEW: Lắng nghe mã chuyển hướng
+redirectCodesRef.on('value', (snapshot) => {
+    redirectCodes = snapshot.val() || [];
+});
 
-function saveWebsiteSettings() {
-    settingsRef.set(websiteSettings);
-}
+// Hàm lưu dữ liệu (dùng trong admin, trang chủ không ghi)
+function saveData() { /* không cần */ }
+function saveWebsiteSettings() { /* không cần */ }
 
 // Hiển thị thông báo (giữ nguyên)
 function showNotification(message, type = 'success') {
@@ -98,7 +102,7 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// ==================== CÁC HÀM RENDER ====================
+// ==================== CÁC HÀM RENDER (giữ nguyên) ====================
 
 // Hiển thị danh mục (chỉ main categories)
 function renderCategories() {
@@ -190,29 +194,6 @@ function filterBySubCategory(subCatId) {
     const products = data.products.filter(product => product.subCategoryId === subCatId);
     const subCat = data.subCategories.find(cat => cat.id === subCatId);
     renderProducts(products, subCat ? subCat.name : 'Sản phẩm');
-}
-
-// Tìm kiếm sản phẩm theo mã
-function searchProducts() {
-    const searchInput = document.getElementById('searchInput');
-    const searchTerm = searchInput.value.trim().toUpperCase();
-    
-    if (searchTerm === '') {
-        if (data.mainCategories.length > 0) {
-            showMainCategory(data.mainCategories[0].id);
-        }
-        return;
-    }
-    
-    const foundProducts = data.products.filter(product => 
-        product.code && product.code.toUpperCase().includes(searchTerm)
-    );
-    
-    if (foundProducts.length > 0) {
-        renderProducts(foundProducts, `Kết quả tìm kiếm mã: ${searchTerm}`);
-    } else {
-        renderProducts([], `Không tìm thấy mã: ${searchTerm}`);
-    }
 }
 
 // Format giá tiền
@@ -549,6 +530,69 @@ function renderWebsiteSettings() {
         } else {
             copyright.style.display = 'none';
         }
+    }
+}
+
+// ==================== NEW: XỬ LÝ MÃ CHUYỂN HƯỚNG ====================
+
+// Hàm xử lý khi nhập mã (gọi từ search)
+function handleRedirectCode(rc) {
+    // Kiểm tra lượt sử dụng
+    if (rc.maxUses > 0 && rc.currentUses >= rc.maxUses) {
+        showNotification('Mã này đã hết lượt sử dụng!', 'error');
+        return;
+    }
+    
+    // Dùng transaction để tăng currentUses an toàn
+    const codeRef = database.ref('redirectCodes').child(rc.id);
+    codeRef.transaction((current) => {
+        if (current) {
+            if (current.maxUses > 0 && current.currentUses >= current.maxUses) {
+                return; // abort, không thay đổi
+            }
+            current.currentUses = (current.currentUses || 0) + 1;
+        }
+        return current;
+    }, (error, committed, snapshot) => {
+        if (error) {
+            showNotification('Lỗi khi xử lý mã!', 'error');
+        } else if (!committed) {
+            showNotification('Mã đã hết lượt dùng!', 'error');
+        } else {
+            // Thành công – chuyển hướng
+            window.location.href = rc.url;
+        }
+    });
+}
+
+// Sửa hàm searchProducts để kiểm tra mã trước
+function searchProducts() {
+    const searchInput = document.getElementById('searchInput');
+    const searchTerm = searchInput.value.trim().toUpperCase();
+    
+    if (searchTerm === '') {
+        if (data.mainCategories.length > 0) {
+            showMainCategory(data.mainCategories[0].id);
+        }
+        return;
+    }
+    
+    // 1. Kiểm tra mã chuyển hướng
+    const redirectCode = redirectCodes.find(rc => rc.code.toUpperCase() === searchTerm);
+    if (redirectCode) {
+        handleRedirectCode(redirectCode);
+        return;
+    }
+    
+    // 2. Nếu không, tìm sản phẩm
+    const foundProducts = data.products.filter(product => 
+        product.code && product.code.toUpperCase().includes(searchTerm)
+    );
+    
+    if (foundProducts.length > 0) {
+        renderProducts(foundProducts, `Kết quả tìm kiếm mã: ${searchTerm}`);
+    } else {
+        renderProducts([], `Không tìm thấy mã: ${searchTerm}`);
     }
 }
 

@@ -1,6 +1,8 @@
 // Tham chiếu Firebase
 const shopDataRef = database.ref('shopData');
 const settingsRef = database.ref('websiteSettings');
+// NEW: Tham chiếu đến redirectCodes
+const redirectCodesRef = database.ref('redirectCodes');
 
 // Dữ liệu toàn cục
 let data = {};
@@ -9,6 +11,8 @@ let settings = JSON.parse(localStorage.getItem('adminSettings')) || {
     showNotifications: true
 };
 let websiteSettings = {};
+// NEW: Mảng lưu mã chuyển hướng
+let redirectCodes = [];
 
 // Biến trạng thái
 let selectedMainCategoryId = null;
@@ -98,6 +102,18 @@ settingsRef.on('value', (snapshot) => {
         settingsRef.set(websiteSettings);
     }
     renderSettingsForm();
+});
+
+// NEW: Lắng nghe mã chuyển hướng
+redirectCodesRef.on('value', (snapshot) => {
+    const val = snapshot.val();
+    if (val) {
+        redirectCodes = val;
+    } else {
+        redirectCodes = [];
+        redirectCodesRef.set([]);
+    }
+    renderRedirectsTable();   // Cập nhật bảng
 });
 
 // Hàm lưu dữ liệu
@@ -448,6 +464,99 @@ function saveSettings() {
     showNotification('Đã lưu cài đặt thành công!');
 }
 
+// ==================== NEW: XỬ LÝ MÃ CHUYỂN HƯỚNG ====================
+
+// Render bảng mã chuyển hướng
+function renderRedirectsTable() {
+    const tbody = document.querySelector('#redirectsTable tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = redirectCodes.map(rc => `
+        <tr>
+            <td>${rc.id}</td>
+            <td><strong>${rc.code}</strong></td>
+            <td><a href="${rc.url}" target="_blank">${rc.url}</a></td>
+            <td>${rc.currentUses || 0} / ${rc.maxUses === 0 ? '∞' : rc.maxUses}</td>
+            <td>${rc.description || ''}</td>
+            <td>
+                <button class="btn-edit" onclick="editRedirect(${rc.id})"><i class="fas fa-edit"></i></button>
+                <button class="btn-delete" onclick="deleteRedirect(${rc.id})"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Hiển thị modal thêm mã
+function showAddRedirectModal() {
+    document.getElementById('redirectModalTitle').textContent = 'Thêm mã chuyển hướng';
+    document.getElementById('redirectForm').reset();
+    document.getElementById('redirectId').value = '';
+    document.getElementById('redirectModal').style.display = 'block';
+}
+
+// Sửa mã
+function editRedirect(id) {
+    const rc = redirectCodes.find(r => r.id === id);
+    if (!rc) return;
+    
+    document.getElementById('redirectModalTitle').textContent = 'Sửa mã chuyển hướng';
+    document.getElementById('redirectId').value = rc.id;
+    document.getElementById('redirectCode').value = rc.code;
+    document.getElementById('redirectUrl').value = rc.url;
+    document.getElementById('redirectMaxUses').value = rc.maxUses;
+    document.getElementById('redirectDescription').value = rc.description || '';
+    document.getElementById('redirectModal').style.display = 'block';
+}
+
+// Lưu mã (thêm/sửa)
+function saveRedirect(event) {
+    event.preventDefault();
+    
+    const id = document.getElementById('redirectId').value;
+    const code = document.getElementById('redirectCode').value.trim();
+    const url = document.getElementById('redirectUrl').value.trim();
+    const maxUses = parseInt(document.getElementById('redirectMaxUses').value) || 0;
+    const description = document.getElementById('redirectDescription').value.trim();
+    
+    if (!code || !url) return;
+    
+    if (id) {
+        // Sửa
+        const index = redirectCodes.findIndex(r => r.id === parseInt(id));
+        if (index !== -1) {
+            redirectCodes[index] = {
+                ...redirectCodes[index],
+                code, url, maxUses, description
+            };
+        }
+    } else {
+        // Thêm mới
+        const newId = Math.max(...redirectCodes.map(r => r.id), 0) + 1;
+        redirectCodes.push({
+            id: newId,
+            code,
+            url,
+            maxUses,
+            currentUses: 0,
+            description
+        });
+    }
+    
+    redirectCodesRef.set(redirectCodes);
+    closeModal('redirectModal');
+    showNotification('Đã lưu mã thành công!');
+}
+
+// Xóa mã
+function deleteRedirect(id) {
+    if (!confirm('Xóa mã này?')) return;
+    redirectCodes = redirectCodes.filter(r => r.id !== id);
+    redirectCodesRef.set(redirectCodes);
+    showNotification('Đã xóa mã!');
+}
+
+// ==================== KẾT THÚC PHẦN MỚI ====================
+
 // Render tất cả bảng
 function renderAdminTables() {
     console.log('renderAdminTables');
@@ -462,6 +571,7 @@ function renderAdminTables() {
     }
     updateDashboardStats();
     renderSettingsForm();
+    renderRedirectsTable();   // NEW
 }
 
 // Tab switching
@@ -481,6 +591,10 @@ document.querySelectorAll('.sidebar-menu li').forEach(item => {
 
         if (tabId === 'settings') {
             renderSettingsForm();
+        }
+        // NEW: Khi chuyển sang tab redirects, render bảng
+        if (tabId === 'redirects') {
+            renderRedirectsTable();
         }
     });
 });
@@ -947,6 +1061,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
+    // Gán các hàm global
     window.closeModal = closeModal;
     window.showAddProductModal = showAddProductModal;
     window.editProduct = editProduct;
@@ -971,4 +1086,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Hàm xử lý dòng giá
     window.addPricingRow = addPricingRow;
     window.removePricingRow = removePricingRow;
+
+    // NEW: Hàm redirect
+    window.showAddRedirectModal = showAddRedirectModal;
+    window.editRedirect = editRedirect;
+    window.deleteRedirect = deleteRedirect;
+    window.saveRedirect = saveRedirect;
 });
