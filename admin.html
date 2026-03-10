@@ -27,7 +27,6 @@
                     <i class="fas fa-tags"></i>
                     <span>Quản lý danh mục</span>
                 </li>
-                <!-- NEW: Tab mã chuyển hướng -->
                 <li data-tab="redirects">
                     <i class="fas fa-link"></i>
                     <span>Mã chuyển hướng</span>
@@ -213,7 +212,7 @@
                     </div>
                 </div>
 
-                <!-- NEW: Redirects Tab -->
+                <!-- Redirects Tab -->
                 <div class="tab-content" id="redirects-tab">
                     <div class="content-header">
                         <h2>Quản lý mã chuyển hướng</h2>
@@ -239,7 +238,7 @@
                     </div>
                 </div>
 
-                <!-- Settings Tab -->
+                <!-- Settings Tab (đã thêm hai trường cho chat) -->
                 <div class="tab-content" id="settings-tab">
                     <div class="content-header">
                         <h2>Cài đặt trang web</h2>
@@ -295,17 +294,28 @@
                             </label>
                             <input type="text" id="settingWorkingHours">
                         </div>
-                        <!-- Kết nối hỗ trợ -->
-<!-- Kết nối hỗ trợ -->
-<h3 style="margin: 20px 0 10px; color:#333;">Kết nối hỗ trợ</h3>
-<div class="form-group">
-    <label>Link Zalo (URL)</label>
-    <input type="url" id="settingSupportZalo" placeholder="https://zalo.me/...">
-</div>
-<div class="form-group">
-    <label>Link Telegram (URL)</label>
-    <input type="url" id="settingSupportTelegram" placeholder="https://t.me/...">
-</div>
+
+                        <!-- Kết nối hỗ trợ (cũ) -->
+                        <h3 style="margin: 20px 0 10px; color:#333;">Kết nối hỗ trợ</h3>
+                        <div class="form-group">
+                            <label>Link Zalo (URL) - Dùng trong sản phẩm</label>
+                            <input type="url" id="settingSupportZalo" placeholder="https://zalo.me/...">
+                        </div>
+                        <div class="form-group">
+                            <label>Link Telegram (URL) - Dùng trong sản phẩm</label>
+                            <input type="url" id="settingSupportTelegram" placeholder="https://t.me/...">
+                        </div>
+
+                        <!-- THÊM MỚI: Link riêng cho bong bóng chat -->
+                        <div class="form-group">
+                            <label>Link Zalo (Bong bóng chat) - URL</label>
+                            <input type="url" id="settingChatZalo" placeholder="https://zalo.me/...">
+                        </div>
+                        <div class="form-group">
+                            <label>Link Telegram (Bong bóng chat) - URL</label>
+                            <input type="url" id="settingChatTelegram" placeholder="https://t.me/...">
+                        </div>
+
                         <!-- Mạng xã hội -->
                         <h3 style="margin: 20px 0 10px; color:#333;">Mạng xã hội</h3>
                         <div class="form-group">
@@ -322,7 +332,7 @@
                         </div>
                         <div class="form-group">
                             <label style="display: flex; align-items: center;">
-                                <input type="checkbox" id="showYoutube" checked style="margin-right: 8px;"> Link Zalo (URL)
+                                <input type="checkbox" id="showYoutube" checked style="margin-right: 8px;"> YouTube (URL)
                             </label>
                             <input type="url" id="settingYoutube">
                         </div>
@@ -333,7 +343,7 @@
                             <input type="url" id="settingTiktok">
                         </div>
 
-                        <!-- Kết nối Zalo -->
+                        <!-- Kết nối Zalo QR -->
                         <h3 style="margin: 20px 0 10px; color:#333;">Kết nối Zalo</h3>
                         <div class="form-group">
                             <label style="display: flex; align-items: center;">
@@ -356,7 +366,6 @@
         </main>
     </div>
 
-    <!-- Modals cũ -->
     <!-- Product Modal -->
     <div id="productModal" class="admin-modal">
         <div class="modal-content">
@@ -492,7 +501,7 @@
         </div>
     </div>
 
-    <!-- NEW: Redirect Modal -->
+    <!-- Redirect Modal -->
     <div id="redirectModal" class="admin-modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('redirectModal')">&times;</span>

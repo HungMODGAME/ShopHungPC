@@ -31,7 +31,7 @@ shopDataRef.on('value', (snapshot) => {
     renderCategories();
 });
 
-// Lắng nghe cài đặt website
+// Lắng nghe cài đặt website (đã thêm chatZalo, chatTelegram)
 settingsRef.on('value', (snapshot) => {
     const val = snapshot.val();
     if (val) {
@@ -64,9 +64,11 @@ settingsRef.on('value', (snapshot) => {
             showTiktok: true,
             showZaloQR: true,
             showCopyright: true,
-            // Link hỗ trợ (không checkbox)
             supportZalo: "",
-            supportTelegram: ""
+            supportTelegram: "",
+            // THÊM MỚI
+            chatZalo: "",
+            chatTelegram: ""
         };
         settingsRef.set(websiteSettings);
     }
@@ -206,7 +208,6 @@ function renderProducts(products, title) {
             pricesHtml = '<div class="product-price">Liên hệ</div>';
         }
 
-        // Card chỉ có nút "Xem chi tiết" (đã bỏ Zalo/Telegram)
         productCard.innerHTML = `
             <div class="product-badge">${product.code || 'SP' + product.id}</div>
             <div class="product-image">
@@ -286,7 +287,7 @@ function showProductDetail(productId) {
         `;
     }
 
-    // Tạo nút Zalo/Telegram: luôn hiện nếu có link, nếu không thì không hiện (có thể bỏ if để luôn hiện)
+    // Nút Zalo/Telegram trong chi tiết sản phẩm vẫn dùng supportZalo/supportTelegram
     let zaloButton = '';
     if (websiteSettings.supportZalo) {
         zaloButton = `<button class="btn-zalo" onclick="contactZalo()"><i class="fab fa-zalo"></i> Chat Zalo</button>`;
@@ -468,21 +469,21 @@ function renderWebsiteSettings() {
     }
 }
 
-// ==================== BONG BÓNG CHAT NỔI ====================
+// ==================== BONG BÓNG CHAT NỔI (DÙNG LINK RIÊNG) ====================
 function updateFloatingChat() {
     const zaloLink = document.getElementById('floatingZalo');
     const teleLink = document.getElementById('floatingTelegram');
     if (zaloLink) {
-        if (websiteSettings.supportZalo) {
-            zaloLink.href = websiteSettings.supportZalo;
+        if (websiteSettings.chatZalo) {
+            zaloLink.href = websiteSettings.chatZalo;
             zaloLink.style.display = 'flex';
         } else {
             zaloLink.style.display = 'none';
         }
     }
     if (teleLink) {
-        if (websiteSettings.supportTelegram) {
-            teleLink.href = websiteSettings.supportTelegram;
+        if (websiteSettings.chatTelegram) {
+            teleLink.href = websiteSettings.chatTelegram;
             teleLink.style.display = 'flex';
         } else {
             teleLink.style.display = 'none';

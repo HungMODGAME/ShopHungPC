@@ -56,7 +56,7 @@ settingsRef.on('value', (snapshot) => {
     if (val) {
         websiteSettings = val;
     } else {
-        // Giá trị mặc định (đã bỏ checkbox)
+        // Giá trị mặc định (đã thêm chatZalo, chatTelegram)
         websiteSettings = {
             shopName: "Tên cửa hàng",
             logo: "https://via.placeholder.com/150x50/4CAF50/ffffff?text=LOGO+SHOP",
@@ -71,7 +71,6 @@ settingsRef.on('value', (snapshot) => {
             tiktok: "#",
             zaloQR: "https://via.placeholder.com/100x100/3498db/ffffff?text=QR+Code",
             footerCopyright: "© 2024 ShopOnline. Tất cả quyền được bảo lưu.",
-            // Các checkbox hiển thị chung
             showShopName: true,
             showLogo: true,
             showAboutText: true,
@@ -85,9 +84,11 @@ settingsRef.on('value', (snapshot) => {
             showTiktok: true,
             showZaloQR: true,
             showCopyright: true,
-            // Link hỗ trợ (không checkbox)
             supportZalo: "",
-            supportTelegram: ""
+            supportTelegram: "",
+            // THÊM MỚI
+            chatZalo: "",
+            chatTelegram: ""
         };
         settingsRef.set(websiteSettings);
     }
@@ -166,7 +167,7 @@ function updateDashboardStats() {
     }
 }
 
-// ==================== RENDER CÁC BẢNG (giữ nguyên) ====================
+// ==================== RENDER CÁC BẢNG ====================
 function renderSubCategoryGrid() {
     const grid = document.getElementById('subCategoryGrid');
     if (!grid) return;
@@ -329,7 +330,7 @@ function renderSubCategoriesTable(mainCatId = null) {
     }).join('');
 }
 
-// ==================== CÀI ĐẶT (ĐÃ BỎ CHECKBOX) ====================
+// ==================== CÀI ĐẶT (ĐÃ THÊM CHAT ZALO/TELEGRAM) ====================
 function renderSettingsForm() {
     const set = (id, value) => {
         const el = document.getElementById(id);
@@ -353,11 +354,14 @@ function renderSettingsForm() {
     set('settingTiktok', websiteSettings.tiktok);
     set('settingZaloQR', websiteSettings.zaloQR);
     set('settingCopyright', websiteSettings.footerCopyright);
-    // Link hỗ trợ
+    // Link hỗ trợ cũ
     set('settingSupportZalo', websiteSettings.supportZalo);
     set('settingSupportTelegram', websiteSettings.supportTelegram);
+    // THÊM MỚI: Link riêng cho bong bóng chat
+    set('settingChatZalo', websiteSettings.chatZalo);
+    set('settingChatTelegram', websiteSettings.chatTelegram);
 
-    // Các checkbox cũ
+    // Các checkbox
     setChecked('showShopName', websiteSettings.showShopName);
     setChecked('showLogo', websiteSettings.showLogo);
     setChecked('showAboutText', websiteSettings.showAboutText);
@@ -388,9 +392,11 @@ function saveSettings() {
         tiktok: document.getElementById('settingTiktok')?.value || '',
         zaloQR: document.getElementById('settingZaloQR')?.value || '',
         footerCopyright: document.getElementById('settingCopyright')?.value || '',
-        // Link hỗ trợ
         supportZalo: document.getElementById('settingSupportZalo')?.value || '',
         supportTelegram: document.getElementById('settingSupportTelegram')?.value || '',
+        // THÊM MỚI
+        chatZalo: document.getElementById('settingChatZalo')?.value || '',
+        chatTelegram: document.getElementById('settingChatTelegram')?.value || '',
 
         showShopName: document.getElementById('showShopName')?.checked || false,
         showLogo: document.getElementById('showLogo')?.checked || false,
@@ -410,7 +416,7 @@ function saveSettings() {
     showNotification('Đã lưu cài đặt thành công!');
 }
 
-// ==================== MÃ CHUYỂN HƯỚNG (giữ nguyên) ====================
+// ==================== MÃ CHUYỂN HƯỚNG ====================
 function renderRedirectsTable() {
     const tbody = document.querySelector('#redirectsTable tbody');
     if (!tbody) return;
