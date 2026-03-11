@@ -16,6 +16,10 @@ let redirectCodes = [];
 let selectedMainCategoryId = null;
 let selectedSubCategoryId = null;
 
+// Biến lưu đối tượng Sortable cho danh mục chính và phụ
+let mainCategorySortable = null;
+let subCategorySortable = null;
+
 // Hàm chuẩn hóa dữ liệu
 function normalizeData() {
     data.products = data.products || [];
@@ -176,7 +180,7 @@ function renderSubCategoryGrid() {
         const productCount = sub.products.length;
         const isActive = selectedSubCategoryId === sub.id;
         return `
-            <div class="subcategory-card ${isActive ? 'active' : ''}" onclick="selectSubCategory(${sub.id})">
+            <div class="subcategory-card ${isActive ? 'active' : ''}" data-id="${sub.id}" onclick="selectSubCategory(${sub.id})">
                 <div class="subcategory-card-image">
                     <img src="${sub.image}" alt="${sub.name}" onerror="if(!this.src.includes('data:image')) this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\' viewBox=\'0 0 150 150\'%3E%3Crect width=\'150\' height=\'150\' fill=\'%23cccccc\'/%3E%3Ctext x=\'30\' y=\'85\' font-size=\'18\' fill=\'%23000\'%3EError%3C/text%3E%3C/svg%3E';">
                 </div>
@@ -188,6 +192,9 @@ function renderSubCategoryGrid() {
             </div>
         `;
     }).join('');
+
+    // Khởi tạo kéo thả cho danh mục phụ
+    initSubCategoryDragDrop();
 }
 
 function selectSubCategory(subCatId) {
@@ -264,6 +271,64 @@ function renderMainCategoriesTable() {
     }).join('');
 }
 
+// Hàm khởi tạo kéo thả cho danh mục chính
+function initMainCategoryDragDrop() {
+    const grid = document.getElementById('mainCategoryGrid');
+    if (!grid) return;
+
+    // Hủy sortable cũ nếu tồn tại
+    if (mainCategorySortable) {
+        mainCategorySortable.destroy();
+    }
+
+    // Khởi tạo Sortable mới
+    mainCategorySortable = new Sortable(grid, {
+        animation: 150,
+        handle: '.main-category-card', // chỉ kéo được khi click vào card
+        draggable: '.main-category-card',
+        onEnd: function(evt) {
+            // Lấy thứ tự ID từ các phần tử trong DOM sau khi kéo
+            const newIds = Array.from(grid.children).map(card => parseInt(card.dataset.id));
+
+            // Sắp xếp lại mảng data.mainCategories theo thứ tự mới
+            const orderedCategories = newIds.map(id => data.mainCategories.find(cat => cat.id === id));
+            data.mainCategories = orderedCategories;
+
+            // Lưu lên Firebase
+            saveData();
+        }
+    });
+}
+
+// Hàm khởi tạo kéo thả cho danh mục phụ
+function initSubCategoryDragDrop() {
+    const grid = document.getElementById('subCategoryGrid');
+    if (!grid) return;
+
+    // Hủy sortable cũ nếu tồn tại
+    if (subCategorySortable) {
+        subCategorySortable.destroy();
+    }
+
+    // Khởi tạo Sortable mới
+    subCategorySortable = new Sortable(grid, {
+        animation: 150,
+        draggable: '.subcategory-card',
+        onEnd: function(evt) {
+            // Lấy thứ tự ID từ các phần tử trong DOM sau khi kéo
+            const newIds = Array.from(grid.children).map(card => parseInt(card.dataset.id));
+
+            // Sắp xếp lại mảng data.subCategories theo thứ tự mới
+            const orderedSubs = newIds.map(id => data.subCategories.find(sub => sub.id === id));
+            data.subCategories = orderedSubs;
+
+            // Lưu lên Firebase
+            saveData();
+        }
+    });
+}
+
+// Hàm renderMainCategoryGrid đã thêm data-id và gọi initMainCategoryDragDrop
 function renderMainCategoryGrid() {
     const grid = document.getElementById('mainCategoryGrid');
     if (!grid) return;
@@ -272,7 +337,7 @@ function renderMainCategoryGrid() {
         const totalProducts = data.subCategories.filter(s => s.mainCategoryId === cat.id).reduce((total, sub) => total + sub.products.length, 0);
         const isActive = selectedMainCategoryId === cat.id;
         return `
-            <div class="main-category-card ${isActive ? 'active' : ''}" onclick="selectMainCategory(${cat.id})">
+            <div class="main-category-card ${isActive ? 'active' : ''}" data-id="${cat.id}" onclick="selectMainCategory(${cat.id})">
                 <div class="main-category-image">
                     <img src="${cat.image}" alt="${cat.name}" onerror="if(!this.src.includes('data:image')) this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\' viewBox=\'0 0 150 150\'%3E%3Crect width=\'150\' height=\'150\' fill=\'%23cccccc\'/%3E%3Ctext x=\'30\' y=\'85\' font-size=\'18\' fill=\'%23000\'%3EError%3C/text%3E%3C/svg%3E';">
                 </div>
@@ -284,6 +349,9 @@ function renderMainCategoryGrid() {
             </div>
         `;
     }).join('');
+
+    // Sau khi render, khởi tạo kéo thả
+    initMainCategoryDragDrop();
 }
 
 function selectMainCategory(mainCatId) {
@@ -330,7 +398,7 @@ function renderSubCategoriesTable(mainCatId = null) {
     }).join('');
 }
 
-// ==================== CÀI ĐẶT (ĐÃ THÊM CHAT ZALO/TELEGRAM) ====================
+// ==================== CÀI ĐẶT ====================
 function renderSettingsForm() {
     const set = (id, value) => {
         const el = document.getElementById(id);

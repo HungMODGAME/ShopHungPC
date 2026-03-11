@@ -6,6 +6,8 @@
     <title>Admin - Quản lý cửa hàng</title>
     <link rel="stylesheet" href="admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- THÊM MỚI: Thư viện SortableJS để kéo thả -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </head>
 <body>
     <div class="admin-container">
@@ -183,6 +185,7 @@
                     
                     <h3 style="margin: 30px 0 10px; color: #333;">Danh mục phụ</h3>
                     
+                    <!-- THÊM MỚI: Grid danh mục chính có thể kéo thả (đã thêm data-id trong JS) -->
                     <div class="main-category-grid" id="mainCategoryGrid">
                         <!-- Các card danh mục chính sẽ được load từ JS -->
                     </div>
@@ -238,7 +241,7 @@
                     </div>
                 </div>
 
-                <!-- Settings Tab (đã thêm hai trường cho chat) -->
+                <!-- Settings Tab -->
                 <div class="tab-content" id="settings-tab">
                     <div class="content-header">
                         <h2>Cài đặt trang web</h2>
@@ -556,6 +559,7 @@
       firebase.initializeApp(firebaseConfig);
       const database = firebase.database();
     </script>
+    <!-- THÊM MỚI: Đã thêm SortableJS ở trên, giờ load admin.js -->
     <script src="admin.js"></script>
 </body>
 </html>
